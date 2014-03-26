@@ -1,3 +1,5 @@
 /bin
 /gwt-unitCache
-**/GWTMain
+war/WEB-INF/deploy/
+war/WEB-INF/classes/
+war/GWTMain/
