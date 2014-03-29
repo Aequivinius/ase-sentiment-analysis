@@ -7,8 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -33,7 +33,7 @@ public class JsonParser {
 			return;
 		}
 
-		List<Tweet> buffer = new ArrayList<Tweet>(BATCH_SIZE);
+		Set<Tweet> buffer = new HashSet<Tweet>(BATCH_SIZE);
 
 		try {
 			FileInputStream fstream = new FileInputStream(file);
@@ -51,6 +51,7 @@ public class JsonParser {
 					if (buffer.size() >= BATCH_SIZE) {
 						db.addTweets(buffer);
 						logger.debug("Added " + BATCH_SIZE + " tweets to the DB.");
+						buffer.clear();
 					}
 				}
 			}
