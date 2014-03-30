@@ -7,11 +7,19 @@ public class JsonTweet {
 	public String id_str;
 
 	public String getText() {
-		return StringEscapeUtils.unescapeJava(text);
+		if (text == null)
+			return "";
+		// unescape null-string and all java attributes
+		return StringEscapeUtils.unescapeJava(text.replace('\u0000', ' '));
 	}
 
 	public long getId() {
-		return Long.valueOf(id_str);
+		try {
+			return Long.valueOf(id_str);
+		} catch (NumberFormatException e) {
+			// cannot parse the id, take current timestamp as a workaround
+			return System.currentTimeMillis();
+		}
 	}
 
 	@Override

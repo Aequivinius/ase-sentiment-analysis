@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +18,7 @@ import com.google.gson.Gson;
 public class JsonParser {
 
 	private static final Logger logger = Logger.getLogger(JsonParser.class);
-	private static final int BATCH_SIZE = 10000;
+	private static final int BATCH_SIZE = 1000;
 
 	private final Database db;
 	private final Gson gson;
@@ -39,7 +40,8 @@ public class JsonParser {
 			FileInputStream fstream = new FileInputStream(file);
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			BufferedReader br = new BufferedReader(new InputStreamReader(in,
+					Charset.forName("UTF8")));
 			String strLine;
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
@@ -49,24 +51,29 @@ public class JsonParser {
 					buffer.add(preprocess(tweet));
 
 					if (buffer.size() >= BATCH_SIZE) {
-						db.addTweets(buffer);
-						logger.debug("Added " + BATCH_SIZE + " tweets to the DB.");
+						insertBuffer(buffer);
 						buffer.clear();
 					}
 				}
 			}
 
 			// insert the rest in the buffer
-			db.addTweets(buffer);
-			logger.debug("Inserted " + buffer.size() + " tweets to finalize.");
+			insertBuffer(buffer);
 
 			// Close the input stream
 			in.close();
 			br.close();
 		} catch (IOException e) {// Catch exception if any
 			logger.error("File read exception", e);
+		}
+	}
+
+	private void insertBuffer(Set<Tweet> buffer) {
+		try {
+			db.addTweets(buffer);
+			logger.debug("Added " + buffer.size() + " tweets to the DB.");
 		} catch (SQLException e) {
-			logger.error("Database exception", e);
+			logger.error("Could not insert batch", e.getNextException());
 		}
 	}
 
