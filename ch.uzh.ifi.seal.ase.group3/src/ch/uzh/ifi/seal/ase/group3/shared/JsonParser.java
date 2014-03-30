@@ -78,7 +78,10 @@ public class JsonParser {
 	}
 
 	private Tweet preprocess(JsonTweet tweet) {
-		String preprocessed = Preprocessor.preprocessDocument(tweet.getText());
-		return new Tweet(tweet.getId(), tweet.getText(), preprocessed);
+		String text = tweet.getText();
+		if (text == null)
+			return null;
+		String preprocessed = Preprocessor.preprocessDocument(text);
+		return new Tweet(tweet.getId(), text, preprocessed);
 	}
 }

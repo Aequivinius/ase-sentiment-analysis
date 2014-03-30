@@ -8,9 +8,13 @@ public class JsonTweet {
 
 	public String getText() {
 		if (text == null)
-			return "";
+			return null;
 		// unescape null-string and all java attributes
-		return StringEscapeUtils.unescapeJava(text.replace('\u0000', ' '));
+		try {
+			return StringEscapeUtils.unescapeJava(text.replace('\u0000', ' '));
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public long getId() {
