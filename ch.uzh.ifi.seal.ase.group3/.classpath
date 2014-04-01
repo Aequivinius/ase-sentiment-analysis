@@ -7,6 +7,9 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/postgresql-9.3-1101.jdbc41.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/weka.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/wlsvm.jar"/>
 	<classpathentry kind="con" path="com.amazonaws.eclipse.sdk.AWS_JAVA_SDK"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
