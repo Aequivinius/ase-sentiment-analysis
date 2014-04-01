@@ -1,10 +1,11 @@
 package ch.uzh.ifi.seal.ase.group3.server.sentiment;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 
-import ch.uzh.ifi.seal.ase.group3.shared.Tweet;
 import classifier.ClassifierBuilder;
 import classifier.WekaClassifier;
 
@@ -12,88 +13,68 @@ public class Sentiment {
 	
 	private WekaClassifier wc;
 	
+	
 	public Sentiment() {
-		//costruzione classificatori
+
 		ClassifierBuilder clb = new ClassifierBuilder();
-		/*Options opt = new Options();
-		clb.setOpt(opt);
-		opt.setSelectedFeaturesByFrequency(true);
-		opt.setNumFeatures(150);
-		opt.setRemoveEmoticons(true);*/
-		/* 
-		 * try {
-			clb.prepareTrain();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		try {
-			clb.prepareTest();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		NaiveBayes nb = new NaiveBayes();
-		WekaClassifier wc = null;
-		try {
-			wc = clb.constructClassifier(nb);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			wc.classify("i am very sad");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		try {
+			
 			wc = clb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
+			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	
 	}
 
-	public double avg(List<Tweet> tweets){
+	public double avg(File file){
 		
-		if (tweets.size() == 0){
-			throw new NullPointerException();	//XXX: Wohl nicht das klügste...
+		if (file.length() == 0){
+			throw new IllegalArgumentException("File is empty!");
 		}
 		
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(file));
+		} catch (FileNotFoundException e2) {
+			e2.printStackTrace();
+		}
+		String line;
 		double sum = 0;
+		int counter = 0;
 		
-		for (int i = 0; i < tweets.size(); ++i){
-			
-			Tweet t = tweets.get(i);
-			try {
+		try {
+			while ((line = br.readLine()) != null) {
 				
-				sum += Double.parseDouble(wc.classify(t.getText()));	// XXX: Typecast avoidable?
-				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
+				sum += Double.parseDouble(wc.classify(line));
+				++counter;
+
 			}
+		} catch (NumberFormatException e1) {
+			e1.printStackTrace();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
+		try {
+			
+			br.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		double avg = (sum / counter);
 		
-		double avg = (sum / tweets.size());
 		return avg;
+
 	}
 }
