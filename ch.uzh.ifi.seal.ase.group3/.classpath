@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/weka.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/wlsvm.jar"/>
 	<classpathentry kind="con" path="com.amazonaws.eclipse.sdk.AWS_JAVA_SDK"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-visualization.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
