@@ -1,2 +1,0 @@
-serviceClass: ch.uzh.ifi.seal.ase.group3.client.GreetingService
-path: 07FD2F0C11845E9083078DECF89C9531.gwt.rpc
