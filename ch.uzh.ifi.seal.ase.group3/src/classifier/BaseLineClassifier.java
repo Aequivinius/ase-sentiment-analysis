@@ -19,13 +19,13 @@ public class BaseLineClassifier implements IClassifier {
 	@Override
 	public void evaluate() throws Exception {
 		int giuste = 0, sbagliate = 0;
-		FileInputStream fstream = new FileInputStream("sentiment/test_base.txt");
+		FileInputStream fstream = new FileInputStream("war/resources/sentiment/test_base.txt");
         DataInputStream in = new DataInputStream(fstream);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		List<String> res_pos = new LinkedList<String>();
 		List<String> res_neg = new LinkedList<String>();
-		res_pos = extractFeatures("sentiment/pos.txt");
-		res_neg = extractFeatures("sentiment/neg.txt");
+		res_pos = extractFeatures("war/resources/sentiment/pos.txt");
+		res_neg = extractFeatures("war/resources/sentiment/neg.txt");
 		int pos = 0;
 		int neg = 0;
 		String strLine, pol;
@@ -70,8 +70,8 @@ public class BaseLineClassifier implements IClassifier {
 	public String classify(String stringa) {
 		List<String> res_pos = new LinkedList<String>();
 		List<String> res_neg = new LinkedList<String>();
-		res_pos = extractFeatures("sentiment/pos.txt");
-		res_neg = extractFeatures("sentiment/neg.txt");
+		res_pos = extractFeatures("war/resources/sentiment/pos.txt");
+		res_neg = extractFeatures("war/resources/sentiment/neg.txt");
 		int pos = 0;
 		int neg = 0;
 		String data = stringa;

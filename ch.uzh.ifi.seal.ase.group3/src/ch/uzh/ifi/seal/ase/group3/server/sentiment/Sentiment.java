@@ -32,6 +32,10 @@ public class Sentiment {
 	
 	}
 
+	/**
+	 * @param file Reads file line by line 
+	 * @return avg (between 0 = very bad and 4 = very good).
+	 */
 	public double avg(File file){
 		
 		if (file.length() == 0){

@@ -26,8 +26,8 @@ public class WekaClassifier implements IClassifier, Serializable {
 	private Instances _test;
 	
 	public WekaClassifier() throws Exception {
-		DataSource source_train = new DataSource("sentiment/train1.arff");
-		DataSource source_test = new DataSource("sentiment/test1.arff");
+		DataSource source_train = new DataSource("war/resources/sentiment/train1.arff");
+		DataSource source_test = new DataSource("war/resources/sentiment/test1.arff");
 		_train = source_train.getDataSet();
 		_test = source_test.getDataSet();
 	}
@@ -65,10 +65,10 @@ public class WekaClassifier implements IClassifier, Serializable {
 	public String classify(String stringa) throws FileNotFoundException,
 			IOException, Exception {
 		String string_new;
-		Preprocesser pre = new Preprocesser();
-		string_new = pre.preprocessDocument(stringa);
+		// Preprocesser pre = new Preprocesser();
+		//string_new = pre.preprocessDocument(stringa);
 		String tmp = "";
-		StringTokenizer st = new StringTokenizer(string_new, " ");
+		StringTokenizer st = new StringTokenizer(stringa, " ");
 		//Instances unlabeled = new Instances(new BufferedReader(new FileReader("D:/prova.arff")));
 		Instances unlabeled = new Instances(_train,1);
 		Instance inst = new Instance(unlabeled.numAttributes());

@@ -53,13 +53,13 @@ public class ClassifierBuilder {
 	 * @throws IOException
 	 */
 	public void prepareTrain() throws IOException {
-		_ds.createFilePreprocessed("sentiment/train.txt", "sentiment/train_doc.txt", opt);
-		_ds.createIndexTrain("sentiment/train_doc.txt");
+		_ds.createFilePreprocessed("war/resources/sentiment/train.txt", "war/resources/sentiment/train_doc.txt", opt);
+		_ds.createIndexTrain("war/resources/sentiment/train_doc.txt");
 		if(this.opt.isSelectedFeaturesByFrequency())
 			_ds.getFeat().selectFeaturesByFrequency(2);
 		ArffFileCreator fc = new ArffFileCreator();
 		fc.setDs(_ds);
-		fc.createArff_train("sentiment/train1.arff");
+		fc.createArff_train("war/resources/sentiment/train1.arff");
 	}
 	
 	/**
@@ -67,11 +67,11 @@ public class ClassifierBuilder {
 	 * @throws IOException
 	 */
 	public void prepareTest() throws IOException {
-		_ds.createFilePreprocessed("sentiment/test_base.txt", "sentiment/test_doc.txt", opt);
-		_ds.createIndexTest("sentiment/test_doc.txt");
+		_ds.createFilePreprocessed("war/resources/sentiment/test_base.txt", "war/resources/sentiment/test_doc.txt", opt);
+		_ds.createIndexTest("war/resources/sentiment/test_doc.txt");
 		ArffFileCreator fc = new ArffFileCreator();
 		fc.setDs(_ds);
-		fc.createArff_test("sentiment/test1.arff");
+		fc.createArff_test("war/resources/sentiment/test1.arff");
 		
 	}
 	
@@ -88,7 +88,7 @@ public class ClassifierBuilder {
 			clas.selectFeatures(opt.getNumFeatures());
 		System.out.println("inizio train");
 		clas.train();
-		ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("sentiment/" + classifier.getClass().getName() + ".model"));
+		ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("war/resources/sentiment/" + classifier.getClass().getName() + ".model"));
 		os.writeObject(clas);
 		this.opt.setConstructedClassifier(clas);
 		os.close();
@@ -120,7 +120,7 @@ public class ClassifierBuilder {
 	 * @throws ClassNotFoundException
 	 */
 	public WekaClassifier retrieveClassifier(String classifierName) throws FileNotFoundException, IOException, ClassNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("sentiment/" + classifierName + ".model"));
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("war/resources/sentiment/" + classifierName + ".model"));
 		WekaClassifier wc = (WekaClassifier)ois.readObject();
 		ois.close();
 		return wc;
@@ -166,7 +166,7 @@ public class ClassifierBuilder {
 		fun = new float[183];
 		Preprocesser pr = new Preprocesser();
 		Item temp;
-        FileInputStream fstream = new FileInputStream("sentiment/test_base.txt");
+        FileInputStream fstream = new FileInputStream("war/resources/sentiment/test_base.txt");
         DataInputStream in = new DataInputStream(fstream);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String strLine;

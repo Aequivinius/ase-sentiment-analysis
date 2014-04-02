@@ -115,7 +115,7 @@ public class Features {
 	//crea la lista di stopwords da file
 	public List<String> createListStopwords() throws IOException {
 		List<String> stop = new LinkedList<String>();
-		FileInputStream fstream = new FileInputStream("sentiment/stopwords.txt");
+		FileInputStream fstream = new FileInputStream("war/resources/sentiment/stopwords.txt");
         DataInputStream in = new DataInputStream(fstream);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String strLine;
