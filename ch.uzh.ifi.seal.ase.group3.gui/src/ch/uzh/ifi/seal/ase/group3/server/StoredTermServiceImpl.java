@@ -17,6 +17,7 @@ public class StoredTermServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void storeTerm(SearchTerm term) throws IllegalArgumentException {
 		// TODO: store new term in DB
+		
 	}
 
 	@Override
