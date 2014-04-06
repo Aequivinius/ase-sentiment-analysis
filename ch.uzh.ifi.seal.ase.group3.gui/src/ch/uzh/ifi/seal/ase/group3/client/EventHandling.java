@@ -36,16 +36,15 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 		String buttonName = sender.getElement().getInnerText();
 
 		if (buttonName.equalsIgnoreCase("Add New")) {
-			Window.alert("Add New clicked.");
-			// addNewAction();
+			//Window.alert("Add New clicked.");
+			addNewAction();
 		} 
 		else if (buttonName.equalsIgnoreCase("Clear All")) {
-			Window.alert("Clear All clicked.");
-			// clearAllAction();
+			//Window.alert("Clear All clicked.");
+			clearAllAction();
 		} 
 		else if (buttonName.equalsIgnoreCase("Test Load")) {
-			Window.alert("Test Load clicked.");
-			// testLoadAction();
+			 testLoadAction();
 		}		
 		else {
 			// should not occur
@@ -63,20 +62,20 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 			switch (ne.getKeyCode()){
 			case 'n':
 			case 'N':
-				Window.alert("Add New Shortcut");
-				// addNewAction();
+				//Window.alert("Add New Shortcut");
+				addNewAction();
 				break;
 
 			case 't':
 			case 'T':
-				Window.alert("Test Load Shortcut");
-				// testLoadAction();
+				
+				testLoadAction();
 				break;
 
 			case 'c':
 			case 'C':
-				Window.alert("Clear All Shortcut");
-				// clearAllAction();
+				//Window.alert("Clear All Shortcut");
+				 clearAllAction();
 				break;
 
 			default:
@@ -90,7 +89,8 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 	 * Initiate an artificial test load
 	 */
 	private void testLoadAction(){
-		// TODO: implement test load (use QueueManager to add a large amount of strings to the queue)		
+		// TODO: implement test load (use QueueManager to add a large amount of strings to the queue)	
+		Window.alert("Test Load clicked.");
 	}
 
 	/** 
@@ -141,6 +141,9 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 				}
 			};	
 			
+			
+			// add search term to message queue system
+			env.getQueueManager().removeSearchTerms(callback);			
 			env.getStoredTermService().clearAllStoredTerms(callback);
 		}
 	}	

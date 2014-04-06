@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.ase.group3.server;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ch.uzh.ifi.seal.ase.group3.client.StoredTermService;
 import ch.uzh.ifi.seal.ase.group3.shared.SearchTerm;

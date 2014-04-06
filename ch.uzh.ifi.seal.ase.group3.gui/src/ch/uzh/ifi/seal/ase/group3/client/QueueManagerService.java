@@ -9,4 +9,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("queuemanager")
 public interface QueueManagerService extends RemoteService {
 	void addNewSearchTerm(String term) throws IllegalArgumentException;
+	void removeSearchTerms();
 }

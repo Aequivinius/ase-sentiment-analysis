@@ -8,4 +8,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface QueueManagerServiceAsync {
 	void addNewSearchTerm(String term, AsyncCallback<Void> callback) throws IllegalArgumentException;
+	void removeSearchTerms(AsyncCallback<Void> callback);
 }

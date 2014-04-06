@@ -1,0 +1,20 @@
+<project name="ch.uzh.ifi.seal.ase.group3.gui" basedir="." default="default">
+ 
+	<target name="default" depends="buildwar,deploy"></target>
+ 
+	<target name="buildwar">
+		<war basedir="war" destfile="
+ch.uzh.ifi.seal.ase.group3.gui.war" webxml="war/WEB-INF/web.xml">
+			<exclude name="WEB-INF/**" />
+			<webinf dir="war/WEB-INF/">
+				<include name="**/*.jar" />
+			</webinf>
+		</war>
+	</target>
+ 
+	<target name="deploy">
+		<copy file="
+ch.uzh.ifi.seal.ase.group3.gui.war" todir="." />
+	</target>
+ 
+</project>
