@@ -17,7 +17,6 @@ public class StoredTermServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void storeTerm(SearchTerm term) throws IllegalArgumentException {
 		// TODO: store new term in DB
-		
 	}
 
 	@Override
@@ -25,6 +24,7 @@ public class StoredTermServiceImpl extends RemoteServiceServlet implements
 		// TODO: get all stored terms with sentiments
 		ArrayList<SearchTerm> tempList = new ArrayList<SearchTerm>();
 		return tempList;
+		
 	}
 
 	@Override
@@ -32,8 +32,4 @@ public class StoredTermServiceImpl extends RemoteServiceServlet implements
 		// TODO: clear all routine
 		
 	}
-
-
-
-
 }
