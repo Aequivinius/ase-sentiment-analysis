@@ -1,8 +1,9 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import ch.uzh.ifi.seal.ase.group3.db.Result;
 import ch.uzh.ifi.seal.ase.group3.shared.Constants;
-import ch.uzh.ifi.seal.ase.group3.shared.SearchTerm;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -21,32 +22,32 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class GWTMain implements EntryPoint {
-	
+
 	/* GUI vars */
 	// Main Menu
 	final HorizontalPanel mainMenuPanel = new HorizontalPanel();
 	final Button addNewButton = new Button("Add New");
 	final Button clearAllButton = new Button("Clear All");
 	final Button testLoadButton = new Button("Test Load");
-	final TextBox searchTermField = new TextBox();	
+	final TextBox searchTermField = new TextBox();
 
 	// General Visualization widgets/objects
-	private Label visTitleLabel = new Label (Constants.WAIT_WHILE_FETCHING_TITLE);	
+	private Label visTitleLabel = new Label(Constants.WAIT_WHILE_FETCHING_TITLE);
 	private final String visDefaultContentText = Constants.WAIT_WHILE_FETCHING;
 	private Label visDefaultContentLabel = new Label(visDefaultContentText);
 	private VerticalPanel visContentPanel = new VerticalPanel();
-	
+
 	/* Button & shortcuts interaction */
 	EventHandling eventHandler = new EventHandling(this);
-	
-	/*  Charts instance */
-	private Charts charts = new Charts(); 
-	
+
+	/* Charts instance */
+	private Charts charts = new Charts();
+
 	/* ASync Services */
 	private StoredTermServiceAsync storedTermSvc = GWT.create(StoredTermService.class);
 	private QueueManagerServiceAsync queueMgrSvc = GWT.create(QueueManagerService.class);
 
-	/** This is the entry point method.	 */
+	/** This is the entry point method. */
 	public void onModuleLoad() {
 
 		/* build initial dynamic GUI parts */
@@ -59,11 +60,11 @@ public class GWTMain implements EntryPoint {
 		searchTermField.setFocus(true);
 		searchTermField.selectAll();
 	}
-	
-	/** 
-	 * Build and assemble GUI	 
+
+	/**
+	 * Build and assemble GUI
 	 */
-	private void buildGUI (){
+	private void buildGUI() {
 
 		/* build dynamic GUI parts */
 
@@ -74,7 +75,7 @@ public class GWTMain implements EntryPoint {
 
 		searchTermField.setWidth("150px");
 		mainMenuPanel.add(searchTermField);
-		
+
 		mainMenuPanel.add(addNewButton);
 		mainMenuPanel.add(clearAllButton);
 		mainMenuPanel.add(testLoadButton);
@@ -93,60 +94,57 @@ public class GWTMain implements EntryPoint {
 		visContentPanel.add(visDefaultContentLabel);
 		RootPanel.get("visualizationContent").add(visContentPanel);
 
-		
 		/* add event handlers for mouse & keyboard */
 		addNewButton.addClickHandler(eventHandler);
 		clearAllButton.addClickHandler(eventHandler);
-		testLoadButton.addClickHandler(eventHandler);		
+		testLoadButton.addClickHandler(eventHandler);
 	}
-	
+
 	/**
 	 * Build search terms chart (Google Charts table) using RPC call
 	 */
 	private void buildDataSet() {
-
-		AsyncCallback<ArrayList<SearchTerm>> callback = new AsyncCallback<ArrayList<SearchTerm>>() {
+		AsyncCallback<List<Result>> callback = new AsyncCallback<List<Result>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert (Constants.SERVER_ERROR);
+				Window.alert(Constants.SERVER_ERROR);
 			}
 
 			@Override
-			public void onSuccess(ArrayList<SearchTerm> result) {
-				
+			public void onSuccess(List<Result> result) {
+
 				RootPanel.get("visualizationContent").clear();
-				
-				if (result.isEmpty()){
+
+				if (result.isEmpty()) {
 					// no stored terms found
 					Label commentLabel = new Label(Constants.NO_STORED_TERMS);
 					// commentLabel.addStyleName("commentTextSingle");
 					RootPanel.get("visualizationContent").add(commentLabel);
-				}
-				else {
+				} else {
 					// display results
-					charts.displayData(result);					
+					charts.displayData(result);
 				}
 			}
 		};
-		
+
 		storedTermSvc.getStoredTerms(callback);
 	}
-	
+
 	/**
 	 * @return Stored Term Service instance
 	 */
 	public StoredTermServiceAsync getStoredTermService() {
-		return this.storedTermSvc; 
+		return this.storedTermSvc;
 	}
 
 	/**
-	 * @return Currently entered search term 
+	 * @return Currently entered search term
 	 */
 	public String getNewTerm() {
 		return searchTermField.getValue();
 	}
-	
+
 	/**
 	 * @return Queue Manager Service instance
 	 */
@@ -155,9 +153,9 @@ public class GWTMain implements EntryPoint {
 	}
 
 	/**
-	 * Refresh visualization of stored search terms 
+	 * Refresh visualization of stored search terms
 	 */
 	public void refreshDisplay() {
 		buildDataSet();
-	}		
+	}
 }

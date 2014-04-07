@@ -1,9 +1,8 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import ch.uzh.ifi.seal.ase.group3.shared.SearchTerm;
+import ch.uzh.ifi.seal.ase.group3.db.Result;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.ui.Panel;
@@ -21,25 +20,25 @@ import com.google.gwt.visualization.client.visualizations.Table;
  * Manages Google Charts Visualization of stored search terms
  * 
  */
-public class Charts{
+public class Charts {
 
-	private AbstractDataTable dataTableVis;	
+	private AbstractDataTable dataTableVis;
 	private Table chartTableVis;
-	private ArrayList<SearchTerm> termList;
-	private ArrayList<String> termListSelected;
+	private List<Result> termList;
+	private List<String> termListSelected;
 
 	/**
 	 * Displays a Google Charts Visualization of stored search terms
 	 */
-	public void displayData(final ArrayList<SearchTerm> termList) {
-		
+	public void displayData(final List<Result> termList) {
+
 		this.termList = termList;
 
 		// Create a callback to be called when the visualization API
 		// has been loaded.
 		final Runnable onLoadCallback = new Runnable() {
 			public void run() {
-				Panel panel = RootPanel.get("visualizationContent");				
+				Panel panel = RootPanel.get("visualizationContent");
 
 				dataTableVis = createTableStoredTerms();
 				chartTableVis = new Table(dataTableVis, createOptionsTable(10, 0, true));
@@ -47,7 +46,7 @@ public class Charts{
 				panel.clear(); // clears previous visualization or the loading animation
 				panel.add(chartTableVis);
 			}
-		};		
+		};
 
 		VisualizationUtils.loadVisualizationApi(onLoadCallback, Table.PACKAGE);
 	}
@@ -58,7 +57,7 @@ public class Charts{
 	private Table.Options createOptionsTable(int numberVisibleRows, int sortColumn, Boolean sortAscending) {
 		Table.Options options = Table.Options.create();
 		// options.setWidth(400);
-    	// options.setHeight(240);
+		// options.setHeight(240);
 		options.setPage(Table.Options.Policy.ENABLE);
 		options.setPageSize(numberVisibleRows);
 		options.setSortColumn(sortColumn);
@@ -66,7 +65,7 @@ public class Charts{
 
 		return options;
 	}
-	
+
 	/**
 	 * Create Google Charts Visualization of stored search terms
 	 */
@@ -80,25 +79,25 @@ public class Charts{
 
 		int currentRow = 0;
 
-		for (SearchTerm g : termList) {
+		for (Result g : termList) {
 
-			data.setValue(currentRow, 0, g.getTerm());
+			data.setValue(currentRow, 0, g.getQuery());
 			data.setValue(currentRow, 1, g.getSentiment());
 			++currentRow;
 		}
 
 		// Data view -- read only
 		DataView result = DataView.create(data);
-		return result;	
+		return result;
 	}
 
 	/**
 	 * Manage selected items in table visualization
 	 */
-	private SelectHandler createSelectHandlerComments(final Table chart, final List<SearchTerm> termList) {
+	private SelectHandler createSelectHandlerComments(final Table chart, final List<Result> termList) {
 		return new SelectHandler() {
 			@Override
-			public void onSelect(SelectEvent event) {				
+			public void onSelect(SelectEvent event) {
 
 				// clear List containing previous selection
 				termListSelected.clear();
@@ -109,10 +108,10 @@ public class Charts{
 				for (int i = 0; i < selections.length(); i++) {
 					// add ID of each selection to list
 					Selection selection = selections.get(i);
-					if (selection.isRow()) {									
+					if (selection.isRow()) {
 						int row = selection.getRow();
 						// add all IDs of selected terms to list (retrievable using getSelectedTerms() )
-						termListSelected.add(termList.get(row).getTerm());
+						termListSelected.add(termList.get(row).getQuery());
 					} else {
 						// unreachable, only rows should be selected
 					}
@@ -125,7 +124,7 @@ public class Charts{
 	/**
 	 * Return list of currently selected terms
 	 */
-	public ArrayList<String> getSelectedTerms(){
+	public List<String> getSelectedTerms() {
 		return termListSelected;
 	}
 

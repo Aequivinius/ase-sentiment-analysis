@@ -14,14 +14,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import ch.uzh.ifi.seal.ase.group3.db.interfaces.IPopulateDatabase;
+import ch.uzh.ifi.seal.ase.group3.db.interfaces.IResultDatabase;
 import ch.uzh.ifi.seal.ase.group3.db.interfaces.ISentimentDatabase;
 
-public class Database implements IPopulateDatabase, ISentimentDatabase {
+public class Database implements IPopulateDatabase, ISentimentDatabase, IResultDatabase {
 
 	private static final Logger logger = Logger.getLogger(Database.class);
 
@@ -123,6 +126,37 @@ public class Database implements IPopulateDatabase, ISentimentDatabase {
 
 			stmt.executeUpdate();
 			logger.debug("Added Result: '" + query + "' : " + result);
+		} finally {
+			stmt.close();
+		}
+	}
+
+	@Override
+	public List<Result> getAllResults() throws SQLException {
+		List<Result> results = new ArrayList<Result>();
+		Statement stmt = conn.createStatement();
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT " + RESULT_COLUMNS
+					+ " from result order by computed_at desc;");
+			while (rs.next()) {
+				int i = 1;
+				results.add(new Result(rs.getString(i++), rs.getDouble(i++), rs.getDate(i++)));
+			}
+
+			logger.debug("Got " + results.size() + " results from database");
+		} finally {
+			stmt.close();
+		}
+
+		return results;
+	}
+
+	@Override
+	public void deleteResults() throws SQLException {
+		Statement stmt = conn.createStatement();
+		try {
+			stmt.executeUpdate("DELETE from result");
+			logger.debug("Deleted all results from the database");
 		} finally {
 			stmt.close();
 		}

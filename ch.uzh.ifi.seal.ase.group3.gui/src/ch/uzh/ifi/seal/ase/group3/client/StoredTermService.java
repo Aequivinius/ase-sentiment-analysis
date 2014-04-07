@@ -1,7 +1,8 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
-import java.util.ArrayList;
-import ch.uzh.ifi.seal.ase.group3.shared.SearchTerm;
+import java.util.List;
+
+import ch.uzh.ifi.seal.ase.group3.db.Result;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -11,7 +12,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("storedterm")
 public interface StoredTermService extends RemoteService {
-	void storeTerm(SearchTerm term) throws IllegalArgumentException;
+
+	void storeTerm(Result term) throws IllegalArgumentException;
+
 	void clearAllStoredTerms();
-	ArrayList<SearchTerm> getStoredTerms();
+
+	List<Result> getStoredTerms();
 }
