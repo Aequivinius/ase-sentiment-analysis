@@ -7,8 +7,8 @@ import java.util.List;
 import ch.uzh.ifi.seal.ase.group3.client.StoredTermService;
 import ch.uzh.ifi.seal.ase.group3.db.Database;
 import ch.uzh.ifi.seal.ase.group3.db.DatabaseConnection;
-import ch.uzh.ifi.seal.ase.group3.db.Result;
 import ch.uzh.ifi.seal.ase.group3.db.interfaces.IResultDatabase;
+import ch.uzh.ifi.seal.ase.group3.db.model.Result;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

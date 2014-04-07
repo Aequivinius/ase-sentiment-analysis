@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.db;
+package ch.uzh.ifi.seal.ase.group3.db.model;
 
 /**
  * Represents a tweet as it is stored in the database
@@ -8,9 +8,13 @@ package ch.uzh.ifi.seal.ase.group3.db;
  */
 public class Tweet {
 
-	private final String text;
-	private final Long id;
+	private String text;
+	private Long id;
 	private String preprocessed; // optional
+
+	public Tweet() {
+		this(-1L, null);
+	}
 
 	public Tweet(Long id, String text) {
 		this(id, text, null);

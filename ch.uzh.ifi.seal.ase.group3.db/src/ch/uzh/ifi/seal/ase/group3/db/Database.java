@@ -23,6 +23,8 @@ import org.apache.log4j.Logger;
 import ch.uzh.ifi.seal.ase.group3.db.interfaces.IPopulateDatabase;
 import ch.uzh.ifi.seal.ase.group3.db.interfaces.IResultDatabase;
 import ch.uzh.ifi.seal.ase.group3.db.interfaces.ISentimentDatabase;
+import ch.uzh.ifi.seal.ase.group3.db.model.Result;
+import ch.uzh.ifi.seal.ase.group3.db.model.Tweet;
 
 public class Database implements IPopulateDatabase, ISentimentDatabase, IResultDatabase {
 

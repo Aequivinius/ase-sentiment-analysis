@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.db;
+package ch.uzh.ifi.seal.ase.group3.db.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -9,9 +9,13 @@ import java.util.Date;
 public class Result implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private final String query;
-	private final double sentiment;
-	private final Date date;
+	private String query;
+	private double sentiment;
+	private Date date;
+
+	public Result() {
+		this(null, 0d, new Date());
+	}
 
 	public Result(String term, double sentiment, Date date) {
 		this.query = term;

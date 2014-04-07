@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
 import ch.uzh.ifi.seal.ase.group3.shared.Constants;
+
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

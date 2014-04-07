@@ -3,7 +3,7 @@ package ch.uzh.ifi.seal.ase.group3.db.interfaces;
 import java.sql.SQLException;
 import java.util.List;
 
-import ch.uzh.ifi.seal.ase.group3.db.Result;
+import ch.uzh.ifi.seal.ase.group3.db.model.Result;
 
 public interface IResultDatabase extends IDatabase {
 

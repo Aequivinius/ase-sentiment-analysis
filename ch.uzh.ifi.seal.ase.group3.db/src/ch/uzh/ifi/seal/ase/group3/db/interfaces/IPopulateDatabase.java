@@ -3,7 +3,7 @@ package ch.uzh.ifi.seal.ase.group3.db.interfaces;
 import java.sql.SQLException;
 import java.util.Set;
 
-import ch.uzh.ifi.seal.ase.group3.db.Tweet;
+import ch.uzh.ifi.seal.ase.group3.db.model.Tweet;
 
 public interface IPopulateDatabase extends IDatabase {
 
