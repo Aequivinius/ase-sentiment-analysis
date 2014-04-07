@@ -1,8 +1,8 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier;
+package classifier;
 
 import java.util.StringTokenizer;
 
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.util.Options;
+import util.Options;
 
 /**
  * class that preprocess a tweet

@@ -1,8 +1,9 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands;
+package commands;
+
 
 import java.io.IOException;
 
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier.ClassifierBuilder;
+import classifier.ClassifierBuilder;
 
 /**
  * class representing command that prepares the classifier's train

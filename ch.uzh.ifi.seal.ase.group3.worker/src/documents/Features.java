@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.documents;
+package documents;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

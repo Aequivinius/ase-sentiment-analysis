@@ -1,4 +1,5 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands;
+package commands;
+
 
 public interface Command {
 	/**

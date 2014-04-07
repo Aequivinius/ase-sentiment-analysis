@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.utils.sentiment;
+package ch.uzh.ifi.seal.ase.group3.worker.sentiment.test;
 
 import java.io.File;
 import java.sql.SQLException;

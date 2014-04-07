@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier;
+package classifier;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -12,16 +12,18 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import util.ArffFileCreator;
+import util.Options;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.documents.DocumentsSet;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.util.ArffFileCreator;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.util.Options;
+import documents.DocumentsSet;
 
 /**
  * The receiver class
  */
 public class ClassifierBuilder {
+
+	public static final String RESOURCE_PATH = "WebContent/resources/";
 
 	private final DocumentsSet _ds;
 	private Options opt;
@@ -54,9 +56,8 @@ public class ClassifierBuilder {
 	 * @throws IOException
 	 */
 	public void prepareTrain() throws IOException {
-		_ds.createFilePreprocessed("war/resources/sentiment/train.txt",
-				"war/resources/sentiment/train_doc.txt", opt);
-		_ds.createIndexTrain("war/resources/sentiment/train_doc.txt");
+		_ds.createFilePreprocessed(RESOURCE_PATH + "train.txt", RESOURCE_PATH + "train_doc.txt", opt);
+		_ds.createIndexTrain(RESOURCE_PATH + "train_doc.txt");
 		if (this.opt.isSelectedFeaturesByFrequency())
 			_ds.getFeat().selectFeaturesByFrequency(2);
 		ArffFileCreator fc = new ArffFileCreator();
@@ -70,12 +71,11 @@ public class ClassifierBuilder {
 	 * @throws IOException
 	 */
 	public void prepareTest() throws IOException {
-		_ds.createFilePreprocessed("war/resources/sentiment/test_base.txt",
-				"war/resources/sentiment/test_doc.txt", opt);
-		_ds.createIndexTest("war/resources/sentiment/test_doc.txt");
+		_ds.createFilePreprocessed(RESOURCE_PATH + "test_base.txt", RESOURCE_PATH + "test_doc.txt", opt);
+		_ds.createIndexTest(RESOURCE_PATH + "test_doc.txt");
 		ArffFileCreator fc = new ArffFileCreator();
 		fc.setDs(_ds);
-		fc.createArff_test("war/resources/sentiment/test1.arff");
+		fc.createArff_test(RESOURCE_PATH + "test1.arff");
 
 	}
 
@@ -93,7 +93,7 @@ public class ClassifierBuilder {
 			clas.selectFeatures(opt.getNumFeatures());
 		System.out.println("inizio train");
 		clas.train();
-		ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("war/resources/sentiment/"
+		ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(RESOURCE_PATH
 				+ classifier.getClass().getName() + ".model"));
 		os.writeObject(clas);
 		this.opt.setConstructedClassifier(clas);
@@ -130,8 +130,8 @@ public class ClassifierBuilder {
 	 */
 	public WekaClassifier retrieveClassifier(String classifierName) throws FileNotFoundException,
 			IOException, ClassNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("war/resources/sentiment/"
-				+ classifierName + ".model"));
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(RESOURCE_PATH + classifierName
+				+ ".model"));
 		WekaClassifier wc = (WekaClassifier) ois.readObject();
 		ois.close();
 		return wc;
@@ -179,7 +179,7 @@ public class ClassifierBuilder {
 		fun = new float[183];
 		Preprocesser pr = new Preprocesser();
 		Item temp;
-		FileInputStream fstream = new FileInputStream("war/resources/sentiment/test_base.txt");
+		FileInputStream fstream = new FileInputStream(RESOURCE_PATH + "test_base.txt");
 		DataInputStream in = new DataInputStream(fstream);
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		String strLine;
@@ -200,5 +200,7 @@ public class ClassifierBuilder {
 			fun[i - 1] = correct / i;
 			i++;
 		}
+
+		br.close();
 	}
 }

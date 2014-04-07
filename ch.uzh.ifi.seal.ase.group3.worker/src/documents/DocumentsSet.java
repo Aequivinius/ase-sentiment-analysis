@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.documents;
+package documents;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier.Preprocesser;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.util.Options;
+import util.Options;
+import classifier.Preprocesser;
 
 /**
  * class representing a tweets' dataset

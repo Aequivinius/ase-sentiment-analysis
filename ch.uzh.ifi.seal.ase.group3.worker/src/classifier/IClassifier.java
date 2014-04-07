@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier;
+package classifier;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

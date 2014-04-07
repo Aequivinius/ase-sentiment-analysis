@@ -1,9 +1,9 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.util;
+package util;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier.WekaClassifier;
+import classifier.WekaClassifier;
 /**
  * class to manage training options
  */

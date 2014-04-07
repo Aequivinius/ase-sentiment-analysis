@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.util;
+package util;
 
 import java.awt.Color;
 import java.awt.Graphics;

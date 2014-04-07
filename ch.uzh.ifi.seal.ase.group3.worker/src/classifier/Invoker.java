@@ -1,10 +1,10 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier;
+package classifier;
 
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands.CalculateWmPrecisionCommand;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands.Command;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands.ConstructCommand;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands.ConstructWmCommand;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands.PrepareTrainCommand;
+import commands.CalculateWmPrecisionCommand;
+import commands.Command;
+import commands.ConstructCommand;
+import commands.ConstructWmCommand;
+import commands.PrepareTrainCommand;
 
 /**
  * 

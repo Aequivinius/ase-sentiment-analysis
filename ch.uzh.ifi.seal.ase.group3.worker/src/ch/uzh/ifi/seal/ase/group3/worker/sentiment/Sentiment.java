@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier.ClassifierBuilder;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier.WekaClassifier;
+import classifier.ClassifierBuilder;
+import classifier.WekaClassifier;
 
 public class Sentiment {
 
@@ -49,7 +49,6 @@ public class Sentiment {
 
 		try {
 			while ((line = br.readLine()) != null) {
-
 				sum += Double.parseDouble(wc.classify(line));
 				++counter;
 

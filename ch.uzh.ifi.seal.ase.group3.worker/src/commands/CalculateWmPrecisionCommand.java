@@ -1,5 +1,6 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.commands;
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier.ClassifierBuilder;
+package commands;
+
+import classifier.ClassifierBuilder;
 
 /**
  * class representing command for calculating weighted majority classifier's precision 

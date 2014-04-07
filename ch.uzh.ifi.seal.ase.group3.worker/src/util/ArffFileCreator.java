@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.ase.group3.worker.sentiment.util;
+package util;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -6,7 +6,7 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.uzh.ifi.seal.ase.group3.worker.sentiment.documents.DocumentsSet;
+import documents.DocumentsSet;
 /**
  * class to create arff files from a tweets' dataset
  */
