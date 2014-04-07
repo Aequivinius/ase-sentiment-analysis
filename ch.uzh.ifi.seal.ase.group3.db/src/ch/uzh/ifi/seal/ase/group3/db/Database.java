@@ -70,6 +70,7 @@ public class Database implements IPopulateDatabase, ISentimentDatabase {
 			}
 
 			stmt.executeBatch();
+			logger.debug("Added " + tweets.size() + " to the database");
 		} catch (SQLException e) {
 			logger.error("Could not insert batch.", e.getNextException());
 			throw e;
@@ -100,6 +101,7 @@ public class Database implements IPopulateDatabase, ISentimentDatabase {
 			while (resultSet.next()) {
 				writer.println(resultSet.getString(1));
 			}
+			logger.debug("Wrote search result to file " + file.getAbsolutePath());
 		} finally {
 			if (writer != null)
 				writer.close();
@@ -120,6 +122,7 @@ public class Database implements IPopulateDatabase, ISentimentDatabase {
 			stmt.setDate(i++, new Date(System.currentTimeMillis()));
 
 			stmt.executeUpdate();
+			logger.debug("Added Result: '" + query + "' : " + result);
 		} finally {
 			stmt.close();
 		}
