@@ -1,10 +1,15 @@
-package ch.uzh.ifi.seal.ase.group3.worker.database;
+package ch.uzh.ifi.seal.ase.group3.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * FIXME this class is multiplied in the tier and in the UI project. If GWT or AWS support multi-project
+ * builds, we could add another (shared) project to prevent code duplication.
+ * 
+ */
 public class DatabaseConnection {
 
 	public String host;
@@ -54,8 +59,6 @@ public class DatabaseConnection {
 	}
 
 	public static DatabaseConnection getDefaultDatabase() {
-		// TODO: Add alternative db's here
-
 		return new DatabaseConnection("team-3-database.cybcazz75duw.us-east-1.rds.amazonaws.com", 5432,
 				"team3_db", "ase_team3", "WwDXPTHaaCmk8tauN8XBMctLAKXFcq", false);
 	}

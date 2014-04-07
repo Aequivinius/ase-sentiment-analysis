@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import org.apache.log4j.BasicConfigurator;
 
-import ch.uzh.ifi.seal.ase.group3.worker.database.Database;
-import ch.uzh.ifi.seal.ase.group3.worker.database.DatabaseConnection;
+import ch.uzh.ifi.seal.ase.group3.db.Database;
+import ch.uzh.ifi.seal.ase.group3.db.DatabaseConnection;
 
 public class File2DBStarter {
 

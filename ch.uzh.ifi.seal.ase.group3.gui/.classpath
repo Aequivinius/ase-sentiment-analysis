@@ -7,5 +7,6 @@
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/postgresql-9.3-1101.jdbc41.jar"/>
 	<classpathentry exported="true" kind="con" path="com.amazonaws.eclipse.sdk.AWS_JAVA_SDK"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-visualization.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ch.uzh.ifi.seal.ase.group3.db"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

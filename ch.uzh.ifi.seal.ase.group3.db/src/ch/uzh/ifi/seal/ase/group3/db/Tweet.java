@@ -1,5 +1,11 @@
-package ch.uzh.ifi.seal.ase.group3.worker.database;
+package ch.uzh.ifi.seal.ase.group3.db;
 
+/**
+ * Represents a tweet as it is stored in the database
+ * 
+ * @author Nico
+ * 
+ */
 public class Tweet {
 
 	private final String text;

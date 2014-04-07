@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import ch.uzh.ifi.seal.ase.group3.worker.database.Database;
-import ch.uzh.ifi.seal.ase.group3.worker.database.Tweet;
+import ch.uzh.ifi.seal.ase.group3.db.Database;
+import ch.uzh.ifi.seal.ase.group3.db.Tweet;
 import ch.uzh.ifi.seal.ase.group3.worker.sentiment.classifier.Preprocesser;
 
 import com.google.gson.Gson;

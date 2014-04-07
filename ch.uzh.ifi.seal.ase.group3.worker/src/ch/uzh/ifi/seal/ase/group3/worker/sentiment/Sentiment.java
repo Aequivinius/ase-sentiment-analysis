@@ -14,13 +14,9 @@ public class Sentiment {
 	private WekaClassifier wc;
 
 	public Sentiment() {
-
 		ClassifierBuilder clb = new ClassifierBuilder();
-
 		try {
-
 			wc = clb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
