@@ -50,8 +50,7 @@ public class JsonParser {
 			FileInputStream fstream = new FileInputStream(file);
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in,
-					Charset.forName("UTF8")));
+			BufferedReader br = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF8")));
 			String strLine;
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
@@ -86,8 +85,7 @@ public class JsonParser {
 			public void run() {
 				try {
 					db.addTweets(buffer);
-					logger.debug("Added " + buffer.size()
-							+ " tweets to the DB.");
+					logger.debug("Added " + buffer.size() + " tweets to the DB.");
 				} catch (SQLException e) {
 					logger.error("Could not insert batch", e.getNextException());
 				}
@@ -100,6 +98,6 @@ public class JsonParser {
 		if (text == null)
 			return null;
 		String preprocessed = preprocesser.preprocessDocument(text);
-		return new Tweet(tweet.getId(), text, preprocessed);
+		return new Tweet(tweet.getId(), text, tweet.getDate(), preprocessed);
 	}
 }

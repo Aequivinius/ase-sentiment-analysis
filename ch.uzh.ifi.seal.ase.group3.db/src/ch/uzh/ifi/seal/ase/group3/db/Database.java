@@ -31,7 +31,7 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 	private static final Logger logger = Logger.getLogger(Database.class);
 
 	// some constants to avoid duplicate code
-	private static final String TWEET_COLUMNS = "id, text, preprocessed";
+	private static final String TWEET_COLUMNS = "id, text, created_at, preprocessed";
 	private static final String RESULT_COLUMNS = "query, score, computed_at";
 
 	private final Connection conn;
@@ -60,12 +60,13 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 	public void addTweets(Set<Tweet> tweets) throws SQLException {
 		// add them with batch insert
 		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tweet (" + TWEET_COLUMNS
-				+ ") values (?,?,?);");
+				+ ") values (?,?,?,?);");
 		try {
 			for (Tweet tweet : tweets) {
 				int i = 1;
 				stmt.setLong(i++, tweet.getId());
 				stmt.setString(i++, tweet.getText());
+				stmt.setDate(i++, new Date(tweet.getDate()));
 				if (tweet.isPreprocessed()) {
 					stmt.setString(i++, tweet.getPreprocessed());
 				} else {

@@ -14,12 +14,15 @@ create table tweet (
 	text_tsvector tsvector,
 	
 	-- the preprocessed version of the tweet
-	preprocessed text
+	preprocessed text,
+	
+	-- the date when the tweet has been tweeted
+	created_at date NOT NULL default CURRENT_DATE
 );
 
 create index tweet_id_idx on tweet(id);
-create index tweet_text_idx on tweet(text);
 create index tweet_text_tsvector_gin_idx ON tweet USING GIN(text_tsvector);
+create index tweet_date_idx on tweet(created_at);
 create index preprocessed_idx on tweet(preprocessed);
 
 -- create a trigger to automatically fill the ts-vector

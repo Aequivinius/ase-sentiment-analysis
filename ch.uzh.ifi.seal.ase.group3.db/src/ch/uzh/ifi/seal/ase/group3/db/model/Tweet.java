@@ -10,20 +10,22 @@ public class Tweet {
 
 	private String text;
 	private Long id;
+	private long date;
 	private String preprocessed; // optional
 
 	public Tweet() {
-		this(-1L, null);
+		this(-1L, null, -1L);
 	}
 
-	public Tweet(Long id, String text) {
-		this(id, text, null);
+	public Tweet(Long id, String text, long date) {
+		this(id, text, date, null);
 	}
 
-	public Tweet(Long id, String text, String preprocessed) {
+	public Tweet(Long id, String text, long date, String preprocessed) {
 		this.id = id;
 		this.text = text;
 		this.preprocessed = preprocessed;
+		this.setDate(date);
 	}
 
 	public String getText() {
@@ -44,6 +46,14 @@ public class Tweet {
 
 	public boolean isPreprocessed() {
 		return preprocessed != null;
+	}
+
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long date) {
+		this.date = date;
 	}
 
 	@Override
