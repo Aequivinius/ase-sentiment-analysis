@@ -1,4 +1,3 @@
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -12,7 +11,6 @@ import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
 import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 
 /**
  * An example Amazon Elastic Beanstalk Worker Tier application. This example
@@ -30,8 +28,8 @@ public class WorkerServlet extends HttpServlet {
 	 * Instance Profile associated with the EC2 instance on which it is
 	 * run.
 	 */
-	private final AmazonS3Client s3 = new AmazonS3Client(new AWSCredentialsProviderChain(
-			new InstanceProfileCredentialsProvider(), new ClasspathPropertiesFileCredentialsProvider()));
+	/*private final AmazonS3Client s3 = new AmazonS3Client(new AWSCredentialsProviderChain(
+			new InstanceProfileCredentialsProvider(), new ClasspathPropertiesFileCredentialsProvider()));*/
 
 	/**
 	 * This method is invoked to handle POST requests from the local
@@ -55,14 +53,16 @@ public class WorkerServlet extends HttpServlet {
 			// Write the "result" of the work into Amazon S3.
 
 			byte[] message = workRequest.getMessage().getBytes(UTF_8);
-
-			s3.putObject(workRequest.getBucket(), workRequest.getKey(), new ByteArrayInputStream(message),
-					new ObjectMetadata());
+			
+			String str = message.toString();
 
 			// Signal to beanstalk that processing was successful so this work
 			// item should not be retried.
 
 			response.setStatus(200);
+			
+			PrintWriter out = response.getWriter();
+			out.println("Das ist eine Antwort!");
 
 		} catch (RuntimeException | InterruptedException exception) {
 

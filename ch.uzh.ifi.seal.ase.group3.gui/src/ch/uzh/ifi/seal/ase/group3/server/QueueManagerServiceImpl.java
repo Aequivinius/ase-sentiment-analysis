@@ -25,7 +25,7 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
  */
 @SuppressWarnings("serial")
 public class QueueManagerServiceImpl extends RemoteServiceServlet implements QueueManagerService {
-	private String queueName = "G3Queue";
+	private String queueName = "Gruppe3";
 
 	@Override
 	public void addNewSearchTerm(String term) throws IllegalArgumentException {
