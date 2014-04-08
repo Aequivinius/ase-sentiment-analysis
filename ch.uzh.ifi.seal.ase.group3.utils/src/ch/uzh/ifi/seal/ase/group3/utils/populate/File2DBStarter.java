@@ -16,7 +16,7 @@ public class File2DBStarter {
 		// start reading text file into the database
 		Database db = new Database(DatabaseConnection.getDefaultDatabase());
 		JsonParser jsonParser = new JsonParser(db);
-		File dataFile = new File("/Users/nicorutishauser/Downloads/tweets.txt");
+		File dataFile = new File("H:\\Downloads\\tweets.txt");
 
 		jsonParser.parse(dataFile);
 	}

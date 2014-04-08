@@ -10,6 +10,8 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
@@ -27,11 +29,13 @@ public class JsonParser {
 	private final Database db;
 	private final Gson gson;
 	private final Preprocesser preprocesser;
+	private final ExecutorService executor;
 
 	public JsonParser(Database db) {
 		this.db = db;
 		gson = new Gson();
 		preprocesser = new Preprocesser();
+		executor = Executors.newFixedThreadPool(4);
 	}
 
 	public void parse(File file) {
@@ -46,7 +50,8 @@ public class JsonParser {
 			FileInputStream fstream = new FileInputStream(file);
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF8")));
+			BufferedReader br = new BufferedReader(new InputStreamReader(in,
+					Charset.forName("UTF8")));
 			String strLine;
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
@@ -56,7 +61,7 @@ public class JsonParser {
 					buffer.add(preprocess(tweet));
 
 					if (buffer.size() >= BATCH_SIZE) {
-						insertBuffer(buffer);
+						insertBuffer(new HashSet<Tweet>(buffer));
 						buffer.clear();
 					}
 				}
@@ -71,15 +76,23 @@ public class JsonParser {
 		} catch (IOException e) {// Catch exception if any
 			logger.error("File read exception", e);
 		}
+
+		executor.shutdown();
 	}
 
-	private void insertBuffer(Set<Tweet> buffer) {
-		try {
-			db.addTweets(buffer);
-			logger.debug("Added " + buffer.size() + " tweets to the DB.");
-		} catch (SQLException e) {
-			logger.error("Could not insert batch", e.getNextException());
-		}
+	private void insertBuffer(final Set<Tweet> buffer) {
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					db.addTweets(buffer);
+					logger.debug("Added " + buffer.size()
+							+ " tweets to the DB.");
+				} catch (SQLException e) {
+					logger.error("Could not insert batch", e.getNextException());
+				}
+			}
+		});
 	}
 
 	private Tweet preprocess(JsonTweet tweet) {
