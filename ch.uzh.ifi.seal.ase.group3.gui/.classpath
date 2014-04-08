@@ -5,8 +5,8 @@
 	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/log4j-1.2.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/postgresql-9.3-1101.jdbc41.jar"/>
-	<classpathentry exported="true" kind="con" path="com.amazonaws.eclipse.sdk.AWS_JAVA_SDK"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-visualization.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ch.uzh.ifi.seal.ase.group3.db"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/aws-java-sdk-1.7.5.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

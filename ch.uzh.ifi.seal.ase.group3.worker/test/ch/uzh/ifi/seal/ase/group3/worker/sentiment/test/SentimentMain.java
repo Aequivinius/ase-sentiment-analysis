@@ -15,7 +15,7 @@ public class SentimentMain {
 	public static void main(String[] args) throws SQLException {
 		BasicConfigurator.configure();
 
-		String companyName = "maria";
+		String companyName = "Google";
 
 		ISentimentDatabase db = new Database(DatabaseConnection.getDefaultDatabase());
 
