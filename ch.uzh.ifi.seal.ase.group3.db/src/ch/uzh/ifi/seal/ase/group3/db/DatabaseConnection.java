@@ -59,7 +59,7 @@ public class DatabaseConnection {
 	}
 
 	public static DatabaseConnection getDefaultDatabase() {
-		return new DatabaseConnection("team-3-database.cybcazz75duw.us-east-1.rds.amazonaws.com", 5432,
+		return new DatabaseConnection("team3-database.cwpnxzscxztu.eu-west-1.rds.amazonaws.com", 5432,
 				"team3_db", "ase_team3", "WwDXPTHaaCmk8tauN8XBMctLAKXFcq", false);
 	}
 }
