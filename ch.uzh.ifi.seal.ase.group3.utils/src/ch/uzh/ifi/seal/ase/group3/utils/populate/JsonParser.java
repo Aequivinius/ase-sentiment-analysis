@@ -50,19 +50,25 @@ public class JsonParser {
 			FileInputStream fstream = new FileInputStream(file);
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF8")));
+			BufferedReader br = new BufferedReader(new InputStreamReader(in,
+					Charset.forName("UTF8")));
 			String strLine;
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
 				// skip non-json lines
-				if (strLine.startsWith("{")) {
-					JsonTweet tweet = gson.fromJson(strLine, JsonTweet.class);
-					buffer.add(preprocess(tweet));
+				try {
+					if (strLine.startsWith("{")) {
+						JsonTweet tweet = gson.fromJson(strLine,
+								JsonTweet.class);
+						buffer.add(preprocess(tweet));
 
-					if (buffer.size() >= BATCH_SIZE) {
-						insertBuffer(buffer);
-						buffer.clear();
+						if (buffer.size() >= BATCH_SIZE) {
+							insertBuffer(buffer);
+							buffer.clear();
+						}
 					}
+				} catch (Exception e) {
+					logger.error("Cannot process line; skip it");
 				}
 			}
 
@@ -77,6 +83,7 @@ public class JsonParser {
 		}
 
 		executor.shutdown();
+		logger.info("Done parsing file " + file.getAbsolutePath());
 	}
 
 	private void insertBuffer(Set<Tweet> buffer) {

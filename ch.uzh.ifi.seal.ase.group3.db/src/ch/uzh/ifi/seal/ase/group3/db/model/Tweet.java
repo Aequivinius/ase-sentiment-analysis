@@ -33,6 +33,8 @@ public class Tweet {
 	}
 
 	public Long getId() {
+		if (id == null)
+			return -1L;
 		return id;
 	}
 
