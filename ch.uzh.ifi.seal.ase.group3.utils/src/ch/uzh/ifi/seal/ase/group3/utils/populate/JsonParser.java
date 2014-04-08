@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 public class JsonParser {
 
 	private static final Logger logger = Logger.getLogger(JsonParser.class);
-	private static final int BATCH_SIZE = 1000;
+	private static final int BATCH_SIZE = 10000;
 
 	private final Database db;
 	private final Gson gson;
@@ -35,7 +35,7 @@ public class JsonParser {
 		this.db = db;
 		gson = new Gson();
 		preprocesser = new Preprocesser();
-		executor = Executors.newFixedThreadPool(4);
+		executor = Executors.newFixedThreadPool(16);
 	}
 
 	public void parse(File file) {
@@ -60,7 +60,7 @@ public class JsonParser {
 					buffer.add(preprocess(tweet));
 
 					if (buffer.size() >= BATCH_SIZE) {
-						insertBuffer(new HashSet<Tweet>(buffer));
+						insertBuffer(buffer);
 						buffer.clear();
 					}
 				}
@@ -79,18 +79,8 @@ public class JsonParser {
 		executor.shutdown();
 	}
 
-	private void insertBuffer(final Set<Tweet> buffer) {
-		executor.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					db.addTweets(buffer);
-					logger.debug("Added " + buffer.size() + " tweets to the DB.");
-				} catch (SQLException e) {
-					logger.error("Could not insert batch", e.getNextException());
-				}
-			}
-		});
+	private void insertBuffer(Set<Tweet> buffer) {
+		executor.execute(new BufferRunnable(new HashSet<Tweet>(buffer)));
 	}
 
 	private Tweet preprocess(JsonTweet tweet) {
@@ -99,5 +89,23 @@ public class JsonParser {
 			return null;
 		String preprocessed = preprocesser.preprocessDocument(text);
 		return new Tweet(tweet.getId(), text, tweet.getDate(), preprocessed);
+	}
+
+	private class BufferRunnable implements Runnable {
+
+		private final Set<Tweet> buffer;
+
+		public BufferRunnable(Set<Tweet> buffer) {
+			this.buffer = buffer;
+		}
+
+		@Override
+		public void run() {
+			try {
+				db.addTweets(buffer);
+			} catch (SQLException e) {
+				logger.error("Could not insert batch", e.getNextException());
+			}
+		}
 	}
 }
