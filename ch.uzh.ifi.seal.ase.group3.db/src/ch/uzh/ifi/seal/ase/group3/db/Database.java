@@ -26,7 +26,8 @@ import ch.uzh.ifi.seal.ase.group3.db.interfaces.ISentimentDatabase;
 import ch.uzh.ifi.seal.ase.group3.db.model.Result;
 import ch.uzh.ifi.seal.ase.group3.db.model.Tweet;
 
-public class Database implements IPopulateDatabase, ISentimentDatabase, IResultDatabase {
+public class Database implements IPopulateDatabase, ISentimentDatabase,
+		IResultDatabase {
 
 	private static final Logger logger = Logger.getLogger(Database.class);
 
@@ -59,10 +60,11 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 	@Override
 	public void addTweets(Set<Tweet> tweets) throws SQLException {
 		// add them with batch insert
-		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tweet (" + TWEET_COLUMNS
-				+ ") values (?,?,?,?);");
-		try {
-			for (Tweet tweet : tweets) {
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tweet ("
+				+ TWEET_COLUMNS + ") values (?,?,?,?);");
+
+		for (Tweet tweet : tweets) {
+			try {
 				int i = 1;
 				stmt.setLong(i++, tweet.getId());
 				stmt.setString(i++, tweet.getText());
@@ -73,8 +75,12 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 					stmt.setNull(i++, Types.VARCHAR); // preprocessed
 				}
 				stmt.addBatch();
+			} catch (Exception e) {
+				logger.error("Invalid tweet: " + tweet);
 			}
+		}
 
+		try {
 			stmt.executeBatch();
 			logger.debug("Added " + tweets.size() + " to the database");
 		} catch (SQLException e) {
@@ -92,8 +98,9 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 		PrintWriter writer;
 
 		try {
-			writer = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(
-					file)), "UTF-8"));
+			writer = new PrintWriter(new OutputStreamWriter(
+					new BufferedOutputStream(new FileOutputStream(file)),
+					"UTF-8"));
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			logger.error("Cannot write to the file");
 			return;
@@ -107,7 +114,8 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 			while (resultSet.next()) {
 				writer.println(resultSet.getString(1));
 			}
-			logger.debug("Wrote search result to file " + file.getAbsolutePath());
+			logger.debug("Wrote search result to file "
+					+ file.getAbsolutePath());
 		} finally {
 			if (writer != null)
 				writer.close();
@@ -119,8 +127,8 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 
 	@Override
 	public void addResult(String query, double result) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("INSERT INTO result (" + RESULT_COLUMNS
-				+ ") values (?,?,?);");
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO result ("
+				+ RESULT_COLUMNS + ") values (?,?,?);");
 		try {
 			int i = 1;
 			stmt.setString(i++, query);
@@ -143,7 +151,8 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 					+ " from result order by computed_at desc;");
 			while (rs.next()) {
 				int i = 1;
-				results.add(new Result(rs.getString(i++), rs.getDouble(i++), rs.getDate(i++)));
+				results.add(new Result(rs.getString(i++), rs.getDouble(i++), rs
+						.getDate(i++)));
 			}
 
 			logger.debug("Got " + results.size() + " results from database");
