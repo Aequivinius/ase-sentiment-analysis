@@ -3,6 +3,8 @@ package ch.uzh.ifi.seal.ase.group3.db.interfaces;
 import java.io.File;
 import java.sql.SQLException;
 
+import ch.uzh.ifi.seal.ase.group3.db.model.Result;
+
 public interface ISentimentDatabase extends IDatabase {
 
 	/**
@@ -18,9 +20,8 @@ public interface ISentimentDatabase extends IDatabase {
 	/**
 	 * Adds the result of the search query to the database
 	 * 
-	 * @param query the company name where the sentiment was calculated
 	 * @param result the sentiment analysis result
 	 * @throws SQLException
 	 */
-	void addResult(String query, double result) throws SQLException;
+	void addResult(Result result) throws SQLException;
 }

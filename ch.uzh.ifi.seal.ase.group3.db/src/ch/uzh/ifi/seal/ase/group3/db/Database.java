@@ -26,14 +26,13 @@ import ch.uzh.ifi.seal.ase.group3.db.interfaces.ISentimentDatabase;
 import ch.uzh.ifi.seal.ase.group3.db.model.Result;
 import ch.uzh.ifi.seal.ase.group3.db.model.Tweet;
 
-public class Database implements IPopulateDatabase, ISentimentDatabase,
-		IResultDatabase {
+public class Database implements IPopulateDatabase, ISentimentDatabase, IResultDatabase {
 
 	private static final Logger logger = Logger.getLogger(Database.class);
 
 	// some constants to avoid duplicate code
 	private static final String TWEET_COLUMNS = "id, text, created_at, preprocessed";
-	private static final String RESULT_COLUMNS = "query, score, computed_at";
+	private static final String RESULT_COLUMNS = "query, score, num_tweets, start_date, end_date, user_id, computed_at, calculation_time";
 
 	private final Connection conn;
 
@@ -60,8 +59,8 @@ public class Database implements IPopulateDatabase, ISentimentDatabase,
 	@Override
 	public void addTweets(Set<Tweet> tweets) throws SQLException {
 		// add them with batch insert
-		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tweet ("
-				+ TWEET_COLUMNS + ") values (?,?,?,?);");
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tweet (" + TWEET_COLUMNS
+				+ ") values (?,?,?,?);");
 
 		for (Tweet tweet : tweets) {
 			try {
@@ -98,9 +97,8 @@ public class Database implements IPopulateDatabase, ISentimentDatabase,
 		PrintWriter writer;
 
 		try {
-			writer = new PrintWriter(new OutputStreamWriter(
-					new BufferedOutputStream(new FileOutputStream(file)),
-					"UTF-8"));
+			writer = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(
+					file)), "UTF-8"));
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			logger.error("Cannot write to the file");
 			return;
@@ -114,8 +112,7 @@ public class Database implements IPopulateDatabase, ISentimentDatabase,
 			while (resultSet.next()) {
 				writer.println(resultSet.getString(1));
 			}
-			logger.debug("Wrote search result to file "
-					+ file.getAbsolutePath());
+			logger.debug("Wrote search result to file " + file.getAbsolutePath());
 		} finally {
 			if (writer != null)
 				writer.close();
@@ -126,17 +123,21 @@ public class Database implements IPopulateDatabase, ISentimentDatabase,
 	}
 
 	@Override
-	public void addResult(String query, double result) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("INSERT INTO result ("
-				+ RESULT_COLUMNS + ") values (?,?,?);");
+	public void addResult(Result result) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO result (" + RESULT_COLUMNS
+				+ ") values (?,?,?,?,?,?,?,?);");
 		try {
 			int i = 1;
-			stmt.setString(i++, query);
-			stmt.setDouble(i++, result);
-			stmt.setDate(i++, new Date(System.currentTimeMillis()));
-
+			stmt.setString(i++, result.getQuery());
+			stmt.setDouble(i++, result.getSentiment());
+			stmt.setInt(i++, result.getNumTweets());
+			stmt.setDate(i++, new Date(result.getStartDate().getTime()));
+			stmt.setDate(i++, new Date(result.getEndDate().getTime()));
+			stmt.setLong(i++, result.getUserId());
+			stmt.setDate(i++, new Date(System.currentTimeMillis())); // computed at
+			stmt.setLong(i++, result.getCalculationTime());
 			stmt.executeUpdate();
-			logger.debug("Added Result: '" + query + "' : " + result);
+			logger.debug("Added Result: '" + result.getQuery() + "' : " + result.getSentiment());
 		} finally {
 			stmt.close();
 		}
@@ -151,8 +152,16 @@ public class Database implements IPopulateDatabase, ISentimentDatabase,
 					+ " from result order by computed_at desc;");
 			while (rs.next()) {
 				int i = 1;
-				results.add(new Result(rs.getString(i++), rs.getDouble(i++), rs
-						.getDate(i++)));
+				String query = rs.getString(i++);
+				double score = rs.getDouble(i++);
+				int numTweets = rs.getInt(i++);
+				Date startDate = rs.getDate(i++);
+				Date endDate = rs.getDate(i++);
+				long userId = rs.getLong(i++);
+				Date computedAt = rs.getDate(i++);
+				long calculationTime = rs.getLong(i++);
+				results.add(new Result(query, score, startDate, endDate, numTweets, userId, computedAt,
+						calculationTime));
 			}
 
 			logger.debug("Got " + results.size() + " results from database");
