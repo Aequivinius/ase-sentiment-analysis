@@ -92,7 +92,14 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 
 	@Override
 	public void searchToFile(File file, String query) throws SQLException {
-		Statement stmt = conn.createStatement();
+		searchToFile(file, query, new java.util.Date(0L), new java.util.Date());
+	}
+
+	@Override
+	public void searchToFile(File file, String query, java.util.Date startDate, java.util.Date endDate)
+			throws SQLException {
+		PreparedStatement stmt = conn
+				.prepareStatement("SELECT preprocessed FROM tweet WHERE text_tsvector @@ plainto_tsquery('english', ?) AND created_at >= ? and created_at <= ?");
 		ResultSet resultSet = null;
 		PrintWriter writer;
 
@@ -105,13 +112,18 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 		}
 
 		try {
-			resultSet = stmt
-					.executeQuery("SELECT preprocessed FROM tweet WHERE text_tsvector @@ plainto_tsquery('english', '"
-							+ query + "')");
+			int i = 1;
+			stmt.setString(i++, query);
+			stmt.setDate(i++, new Date(startDate.getTime()));
+			stmt.setDate(i++, new Date(endDate.getTime()));
+
+			logger.debug("Searching for " + query + " between " + startDate + " and " + endDate);
+			resultSet = stmt.executeQuery();
 			stmt.setFetchSize(1000);
 			while (resultSet.next()) {
 				writer.println(resultSet.getString(1));
 			}
+
 			logger.debug("Wrote search result to file " + file.getAbsolutePath());
 		} finally {
 			if (writer != null)
@@ -120,6 +132,7 @@ public class Database implements IPopulateDatabase, ISentimentDatabase, IResultD
 				resultSet.close();
 			stmt.close();
 		}
+
 	}
 
 	@Override

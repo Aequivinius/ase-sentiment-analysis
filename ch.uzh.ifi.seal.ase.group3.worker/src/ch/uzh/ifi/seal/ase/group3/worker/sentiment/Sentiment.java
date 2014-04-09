@@ -11,9 +11,18 @@ import classifier.WekaClassifier;
 
 public class Sentiment {
 
+	private final File tweetFile;
 	private WekaClassifier wc;
 
-	public Sentiment() {
+	private double result; // the result of the caluculation
+	private int tweetsProcessed; // how many tweets have been processed
+
+	public Sentiment(File tweetFile) {
+		this.tweetFile = tweetFile;
+		if (tweetFile.length() == 0) {
+			throw new IllegalArgumentException("File is empty!");
+		}
+
 		ClassifierBuilder clb = new ClassifierBuilder();
 		try {
 			wc = clb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
@@ -29,20 +38,12 @@ public class Sentiment {
 
 	/**
 	 * @param file Reads file line by line
-	 * @return avg (between 0 = very bad and 4 = very good).
+	 * @throws FileNotFoundException
 	 */
-	public double avg(File file) {
-
-		if (file.length() == 0) {
-			throw new IllegalArgumentException("File is empty!");
-		}
-
+	public void calculate() throws FileNotFoundException {
 		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-		} catch (FileNotFoundException e2) {
-			e2.printStackTrace();
-		}
+		br = new BufferedReader(new FileReader(tweetFile));
+
 		String line;
 		double sum = 0;
 		int counter = 0;
@@ -51,28 +52,38 @@ public class Sentiment {
 			while ((line = br.readLine()) != null) {
 				sum += Double.parseDouble(wc.classify(line));
 				++counter;
-
 			}
-		} catch (NumberFormatException e1) {
-			e1.printStackTrace();
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
+		} catch (NumberFormatException | IOException e1) {
 			e1.printStackTrace();
 		} catch (Exception e1) {
 			e1.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				// cannot close the reader
+			}
 		}
-		try {
 
-			br.close();
+		result = (sum / counter);
+		tweetsProcessed = counter;
+	}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	/**
+	 * Returns the averaged result
+	 * 
+	 * @return avg (between 0 = very bad and 4 = very good).
+	 */
+	public double getResult() {
+		return result;
+	}
 
-		double avg = (sum / counter);
-
-		return avg;
-
+	/**
+	 * Returns the number of tweets processed
+	 * 
+	 * @return
+	 */
+	public int getTweetsProcessed() {
+		return tweetsProcessed;
 	}
 }
