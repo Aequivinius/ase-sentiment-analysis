@@ -18,7 +18,7 @@ public class SentimentMain {
 	public static void main(String[] args) throws SQLException, FileNotFoundException {
 		BasicConfigurator.configure();
 
-		String companyName = "Google";
+		String companyName = "Microsoft";
 
 		ISentimentDatabase db = new Database(DatabaseConnection.getDefaultDatabase());
 
@@ -27,7 +27,9 @@ public class SentimentMain {
 		// start of calculation
 		long startTime = System.currentTimeMillis();
 
-		db.searchToFile(file, companyName);
+		Date startDate = new Date(0); // 1970
+		Date endDate = new Date(); // now
+		db.searchToFile(file, companyName, startDate, endDate);
 		Sentiment sent = new Sentiment(file);
 		sent.calculate();
 
@@ -35,7 +37,7 @@ public class SentimentMain {
 		long endTime = System.currentTimeMillis();
 		long duration = endTime - startTime;
 
-		Result result = new Result(companyName, new Date(0), new Date(), -1);
+		Result result = new Result(companyName, startDate, endDate, -1);
 		result.setCalculationTime(duration);
 		result.setNumTweets(sent.getTweetsProcessed());
 		result.setSentiment(sent.getResult());

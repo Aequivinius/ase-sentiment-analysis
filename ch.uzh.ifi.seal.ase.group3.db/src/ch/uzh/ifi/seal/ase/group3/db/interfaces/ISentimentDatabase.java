@@ -10,7 +10,7 @@ public interface ISentimentDatabase extends IDatabase {
 
 	/**
 	 * Searches for tweets containing the query and storing the (preprocessed) result to a file (each tweet on
-	 * a line)
+	 * a line). There is no restriction, when this tweet has been created.
 	 * 
 	 * @param file the file to store the results
 	 * @param query the buzz-word to find (e.g. company name)
@@ -20,7 +20,7 @@ public interface ISentimentDatabase extends IDatabase {
 
 	/**
 	 * Searches for tweets containing the query and storing the (preprocessed) result to a file (each tweet on
-	 * a line)
+	 * a line).
 	 * 
 	 * @param file the file to store the results
 	 * @param query the buzz-word to find (e.g. company name)
