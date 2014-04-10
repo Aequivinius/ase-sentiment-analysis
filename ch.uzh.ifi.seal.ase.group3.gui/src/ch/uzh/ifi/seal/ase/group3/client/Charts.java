@@ -77,7 +77,7 @@ public class Charts {
 		data.addColumn(ColumnType.NUMBER, "Result");
 		data.addColumn(ColumnType.DATE, "Start Date");
 		data.addColumn(ColumnType.DATE, "End Date");
-		data.addColumn(ColumnType.DATETIME, "Computed At");
+		data.addColumn(ColumnType.DATE, "Computed At");
 		data.addColumn(ColumnType.NUMBER, "Calculation Time");
 		// data.addColumn(ColumnType.NUMBER, "User ID");
 
