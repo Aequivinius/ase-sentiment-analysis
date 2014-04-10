@@ -143,8 +143,7 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 	 * Refresh results
 	 */
 	private void refreshAction(){
-		env.refreshDisplay();
-		Window.alert(Constants.RESULTS_REFRESHED);
+		env.refreshDisplay();		
 	}
 }
 

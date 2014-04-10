@@ -3,8 +3,10 @@ package ch.uzh.ifi.seal.ase.group3.client;
 import java.util.List;
 
 import ch.uzh.ifi.seal.ase.group3.db.model.Result;
+import ch.uzh.ifi.seal.ase.group3.shared.Constants;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.visualization.client.AbstractDataTable;
@@ -45,6 +47,7 @@ public class Charts {
 				chartTableVis.addSelectHandler(createSelectHandlerComments(chartTableVis, termList));
 				panel.clear(); // clears previous visualization or the loading animation
 				panel.add(chartTableVis);
+				Window.alert(Constants.RESULTS_REFRESHED);
 			}
 		};
 
