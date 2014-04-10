@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -28,11 +27,13 @@ public class GWTMain implements EntryPoint {
 	final HorizontalPanel mainMenuPanel = new HorizontalPanel();
 	final Button addNewButton = new Button("Add New");
 	final Button clearAllButton = new Button("Clear All");
+	final Button refreshButton = new Button("Refresh");
 	final Button testLoadButton = new Button("Test Load");
-	final TextBox searchTermField = new TextBox();
+	final Button loginButton = new Button("Login");
+	// final TextBox searchTermField = new TextBox();
 
 	// General Visualization widgets/objects
-	private Label visTitleLabel = new Label(Constants.WAIT_WHILE_FETCHING_TITLE);
+	private Label visTitleLabel = new Label(Constants.VISUALIZATION_TITLE);
 	private final String visDefaultContentText = Constants.WAIT_WHILE_FETCHING;
 	private Label visDefaultContentLabel = new Label(visDefaultContentText);
 	private VerticalPanel visContentPanel = new VerticalPanel();
@@ -57,8 +58,8 @@ public class GWTMain implements EntryPoint {
 		buildDataSet();
 
 		// Focus the cursor on the add new search term field when the app loads
-		searchTermField.setFocus(true);
-		searchTermField.selectAll();
+		// searchTermField.setFocus(true);
+		// searchTermField.selectAll();
 	}
 
 	/**
@@ -73,12 +74,13 @@ public class GWTMain implements EntryPoint {
 		mainMenuPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		mainMenuPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
-		searchTermField.setWidth("150px");
-		mainMenuPanel.add(searchTermField);
+		// searchTermField.setWidth("150px");
+		// mainMenuPanel.add(searchTermField);
 
 		mainMenuPanel.add(addNewButton);
 		mainMenuPanel.add(clearAllButton);
 		mainMenuPanel.add(testLoadButton);
+		mainMenuPanel.add(refreshButton);
 
 		RootPanel.get("mainMenu").add(mainMenuPanel);
 
@@ -98,6 +100,7 @@ public class GWTMain implements EntryPoint {
 		addNewButton.addClickHandler(eventHandler);
 		clearAllButton.addClickHandler(eventHandler);
 		testLoadButton.addClickHandler(eventHandler);
+		refreshButton.addClickHandler(eventHandler);
 	}
 
 	/**
@@ -115,6 +118,8 @@ public class GWTMain implements EntryPoint {
 			public void onSuccess(List<Result> result) {
 
 				RootPanel.get("visualizationContent").clear();
+				
+				Window.alert("Results fetched");
 
 				if (result.isEmpty()) {
 					// no stored terms found
@@ -141,9 +146,9 @@ public class GWTMain implements EntryPoint {
 	/**
 	 * @return Currently entered search term
 	 */
-	public String getNewTerm() {
-		return searchTermField.getValue();
-	}
+//	public String getNewTerm() {
+//		return searchTermField.getValue();
+//	}
 
 	/**
 	 * @return Queue Manager Service instance

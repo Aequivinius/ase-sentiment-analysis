@@ -46,7 +46,10 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 		} 
 		else if (buttonName.equalsIgnoreCase("Test Load")) {
 			 testLoadAction();
-		}		
+		}
+		else if (buttonName.equalsIgnoreCase("Refresh")) {
+			 refreshAction();
+		}
 		else {
 			// should not occur
 			Window.alert("Error in ClickEvent! What the fuck did you click?");
@@ -78,6 +81,12 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 				//Window.alert("Clear All Shortcut");
 				 clearAllAction();
 				break;
+			
+			case 'r':
+			case 'R':
+				//Window.alert("Refresh Shortcut");
+				 refreshAction();
+				break;
 
 			default:
 				//Window.alert("Unknown shortcut.");
@@ -98,27 +107,9 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 	 * Add new search term to queue
 	 */
 	private void addNewAction(){
-		
-		final String newTerm = env.getNewTerm();
-
-		Boolean save = Window.confirm(Constants.ADD_NEW_TERM_CONFIRM);
-		if (save) {
-
-			// do asynchronous saving 
-			AsyncCallback<Void> callback = new AsyncCallback<Void>(){
-				public void onFailure(Throwable caught) {
-					// Do something with errors.
-					Window.alert (Constants.ADD_NEW_TERM_FAILED);
-				}
-				public void onSuccess(Void result){
-					// show Alert that comment was saved
-					Window.alert(Constants.ADD_NEW_TERM_SUCCESS);						
-				}
-			};
-
-			// add search term to message queue system
-			env.getQueueManager().addNewSearchTerm(newTerm, callback);
-		}
+		NewSearchDialog newTermDialog = new NewSearchDialog(env);
+		newTermDialog.center();
+		newTermDialog.show();		
 	}		
 
 	/** 
@@ -140,14 +131,21 @@ public class EventHandling implements NativePreviewHandler, ClickHandler {
 					// refresh display
 					env.refreshDisplay();
 				}
-			};	
-			
+			};				
 			
 			// add search term to message queue system
 			env.getQueueManager().removeSearchTerms(callback);			
 			env.getStoredTermService().clearAllStoredTerms(callback);
 		}
 	}	
+	
+	/** 
+	 * Refresh results
+	 */
+	private void refreshAction(){
+		env.refreshDisplay();
+		Window.alert(Constants.RESULTS_REFRESHED);
+	}
 }
 
 

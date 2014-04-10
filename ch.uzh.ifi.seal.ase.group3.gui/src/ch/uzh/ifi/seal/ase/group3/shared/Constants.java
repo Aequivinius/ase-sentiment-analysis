@@ -17,7 +17,7 @@ public final class Constants {
 	/**
 	 * The title displayed to the user when fetching stored search terms
 	 */
-	public static final String WAIT_WHILE_FETCHING_TITLE = "Stored search terms are being fetched...";
+	public static final String VISUALIZATION_TITLE = "Stored search terms:";
 	
 	/**
 	 * The message displayed to the user when fetching stored search terms
@@ -61,7 +61,12 @@ public final class Constants {
 	public static final String CLEAR_ALL_SUCCESS = "All stored search terms have been cleared successfully!";
 	
 	/**
-	 * The message displayed to the user when no stored search terms are available
+	 * The message displayed to the user when an empty string is submitted for addition
 	 */
-	public static final String BLA = "Do you want to clear all currently active search terms?";
+	public static final String EMPTY_NEW_STRING = "The search term cannot be empty. Please try again.";
+	
+	/**
+	 * The message displayed to the user when results are refreshed.
+	 */
+	public static final String RESULTS_REFRESHED = "Results were refreshed.";
 }
