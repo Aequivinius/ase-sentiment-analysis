@@ -119,7 +119,7 @@ public class GWTMain implements EntryPoint {
 
 				RootPanel.get("visualizationContent").clear();
 				
-				Window.alert("Results fetched");
+				// Window.alert("Results fetched");
 
 				if (result.isEmpty()) {
 					// no stored terms found
