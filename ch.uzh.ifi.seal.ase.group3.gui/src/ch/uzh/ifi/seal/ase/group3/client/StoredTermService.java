@@ -13,8 +13,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("storedterm")
 public interface StoredTermService extends RemoteService {
 
-	void storeTerm(Result term) throws IllegalArgumentException;
-
 	void clearAllStoredTerms();
 
 	List<Result> getStoredTerms();

@@ -33,14 +33,6 @@ public class StoredTermServiceImpl extends RemoteServiceServlet implements Store
 	}
 
 	@Override
-	public void storeTerm(Result term) throws IllegalArgumentException {
-		// TODO: store new term in DB
-		// Nico: Really do that here? Better hand over the search term to the QueueManager and then to the
-		// tier. The tier calculates the sentiment and finally writes into the database. Thus, there's no need
-		// for the GUI to store a query.
-	}
-
-	@Override
 	public List<Result> getStoredTerms() {
 		IResultDatabase database = getDatabase();
 		if (database == null)
