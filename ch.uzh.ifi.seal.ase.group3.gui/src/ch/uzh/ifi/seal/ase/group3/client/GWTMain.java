@@ -78,7 +78,7 @@ public class GWTMain implements EntryPoint {
 		// mainMenuPanel.add(searchTermField);
 
 		mainMenuPanel.add(addNewButton);
-		mainMenuPanel.add(clearAllButton);
+		// mainMenuPanel.add(clearAllButton); temporarily removed
 		mainMenuPanel.add(testLoadButton);
 		mainMenuPanel.add(refreshButton);
 
