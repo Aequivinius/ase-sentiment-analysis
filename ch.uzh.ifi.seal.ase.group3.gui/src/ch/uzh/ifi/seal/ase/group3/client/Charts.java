@@ -41,7 +41,7 @@ public class Charts {
 				Panel panel = RootPanel.get("visualizationContent");
 
 				dataTableVis = createTableStoredTerms();
-				chartTableVis = new Table(dataTableVis, createOptionsTable(10, 0, true));
+				chartTableVis = new Table(dataTableVis, createOptionsTable(20, 0, true));
 				chartTableVis.addSelectHandler(createSelectHandlerComments(chartTableVis, termList));
 				panel.clear(); // clears previous visualization or the loading animation
 				panel.add(chartTableVis);
@@ -73,7 +73,13 @@ public class Charts {
 		DataTable data = DataTable.create();
 
 		data.addColumn(ColumnType.STRING, "Term");
+		data.addColumn(ColumnType.NUMBER, "# Tweets");
 		data.addColumn(ColumnType.NUMBER, "Result");
+		data.addColumn(ColumnType.DATE, "Start Date");
+		data.addColumn(ColumnType.DATE, "End Date");
+		data.addColumn(ColumnType.DATETIME, "Computed At");
+		data.addColumn(ColumnType.NUMBER, "Calculation Time");
+		// data.addColumn(ColumnType.NUMBER, "User ID");
 
 		data.addRows(termList.size());
 
@@ -82,7 +88,14 @@ public class Charts {
 		for (Result g : termList) {
 
 			data.setValue(currentRow, 0, g.getQuery());
-			data.setValue(currentRow, 1, g.getSentiment());
+			data.setValue(currentRow, 1, g.getNumTweets());
+			data.setValue(currentRow, 2, g.getSentiment());
+			data.setValue(currentRow, 3, g.getStartDate());
+			data.setValue(currentRow, 4, g.getEndDate());
+			data.setValue(currentRow, 5, g.getComputedAt());
+			data.setValue(currentRow, 6, g.getCalculationTime());
+			// data.setValue(currentRow, 7, g.getUserId());
+			
 			++currentRow;
 		}
 
