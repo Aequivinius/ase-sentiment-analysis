@@ -27,7 +27,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class QueueManagerServiceImpl extends RemoteServiceServlet implements QueueManagerService {
 
 	private static final String QUEUE_NAME_GUI2WORKER = "Group3-GUI2Worker";
-	private static final String QUEUE_NAME_WORKER2GUI = "Group3-Worker2GUI";
 
 	@Override
 	public void addNewSearchTerm(String term) throws IllegalArgumentException {
