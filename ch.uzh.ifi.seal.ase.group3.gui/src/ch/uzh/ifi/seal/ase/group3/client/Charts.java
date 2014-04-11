@@ -3,10 +3,8 @@ package ch.uzh.ifi.seal.ase.group3.client;
 import java.util.List;
 
 import ch.uzh.ifi.seal.ase.group3.db.model.Result;
-import ch.uzh.ifi.seal.ase.group3.shared.Constants;
 
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.visualization.client.AbstractDataTable;
@@ -47,7 +45,6 @@ public class Charts {
 				chartTableVis.addSelectHandler(createSelectHandlerComments(chartTableVis, termList));
 				panel.clear(); // clears previous visualization or the loading animation
 				panel.add(chartTableVis);
-				Window.alert(Constants.RESULTS_REFRESHED);
 			}
 		};
 
@@ -76,12 +73,12 @@ public class Charts {
 		DataTable data = DataTable.create();
 
 		data.addColumn(ColumnType.STRING, "Term");
-		data.addColumn(ColumnType.NUMBER, "# Tweets");
 		data.addColumn(ColumnType.NUMBER, "Result");
+		data.addColumn(ColumnType.NUMBER, "# Tweets");
 		data.addColumn(ColumnType.DATE, "Start Date");
 		data.addColumn(ColumnType.DATE, "End Date");
 		data.addColumn(ColumnType.DATE, "Computed At");
-		data.addColumn(ColumnType.NUMBER, "Calculation Time");
+		data.addColumn(ColumnType.NUMBER, "Calculation Time (s)");
 		// data.addColumn(ColumnType.NUMBER, "User ID");
 
 		data.addRows(termList.size());
@@ -89,22 +86,31 @@ public class Charts {
 		int currentRow = 0;
 
 		for (Result g : termList) {
-
 			data.setValue(currentRow, 0, g.getQuery());
-			data.setValue(currentRow, 1, g.getNumTweets());
-			data.setValue(currentRow, 2, g.getSentiment());
+			data.setValue(currentRow, 1, round(g.getSentiment()));
+			data.setValue(currentRow, 2, g.getNumTweets());
 			data.setValue(currentRow, 3, g.getStartDate());
 			data.setValue(currentRow, 4, g.getEndDate());
 			data.setValue(currentRow, 5, g.getComputedAt());
-			data.setValue(currentRow, 6, g.getCalculationTime());
+			data.setValue(currentRow, 6, round(g.getCalculationTime() / 1000.0));
 			// data.setValue(currentRow, 7, g.getUserId());
-			
+
 			++currentRow;
 		}
 
 		// Data view -- read only
 		DataView result = DataView.create(data);
 		return result;
+	}
+
+	/**
+	 * Rounds a value to two decimals
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String round(double value) {
+		return String.valueOf(((double) Math.round(value * 100)) / 100);
 	}
 
 	/**

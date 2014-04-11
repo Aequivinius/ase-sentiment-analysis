@@ -116,9 +116,8 @@ public class GWTMain implements EntryPoint {
 
 			@Override
 			public void onSuccess(List<Result> result) {
-
 				RootPanel.get("visualizationContent").clear();
-				
+
 				// Window.alert("Results fetched");
 
 				if (result.isEmpty()) {
@@ -146,9 +145,9 @@ public class GWTMain implements EntryPoint {
 	/**
 	 * @return Currently entered search term
 	 */
-//	public String getNewTerm() {
-//		return searchTermField.getValue();
-//	}
+	// public String getNewTerm() {
+	// return searchTermField.getValue();
+	// }
 
 	/**
 	 * @return Queue Manager Service instance
