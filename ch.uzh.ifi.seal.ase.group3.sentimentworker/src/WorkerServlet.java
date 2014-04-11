@@ -91,8 +91,10 @@ public class WorkerServlet extends HttpServlet {
 		 * term at a time.
 		 */
 		int waitTime = new Random().nextInt((int) (MAX_WAIT_TIME_MS - MIN_WAIT_TIME_MS));
+		waitTime += MIN_WAIT_TIME_MS;
+		logger.debug("Waiting " + waitTime + "ms before processing '" + searchTerm + "'");
 		try {
-			Thread.sleep(waitTime + MIN_WAIT_TIME_MS);
+			Thread.sleep(waitTime);
 		} catch (InterruptedException e) {
 			logger.error("Cannot wait for random time");
 		}

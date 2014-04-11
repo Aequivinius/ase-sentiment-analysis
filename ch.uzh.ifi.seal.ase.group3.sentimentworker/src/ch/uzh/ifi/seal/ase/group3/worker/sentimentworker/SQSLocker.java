@@ -39,7 +39,6 @@ public class SQSLocker extends BaseSQSHandler {
 			if (message.getBody().equals(identifier)) {
 				SQSUtil.deleteMsg(sqs, queueURL, message);
 				logger.debug("Released lock '" + identifier + "'");
-				break;
 			}
 		}
 	}
