@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -56,58 +57,9 @@ public class WorkerServlet extends HttpServlet {
 		}
 
 		String searchTerm = getTerm(request);
-		logger.info("Start processing " + searchTerm);
 
-		long startTime = System.currentTimeMillis();
-
-		// TODO get these values from the message
-		Date startDate = new Date(0); // 1970
-		Date endDate = new Date(); // now
-
-		// temporary file to store the tweets in
-		File storageFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
-
-		DatabaseConnection conn = DatabaseConnection.getDefaultDatabase();
-		ISentimentDatabase database = null;
-
-		try {
-			database = new Database(conn);
-			database.searchToFile(storageFile, searchTerm, startDate, endDate);
-		} catch (SQLException e) {
-			logger.error("Cannot search db for term " + searchTerm, e);
-			response.setStatus(FAIL_STATE);
-			if (database != null)
-				database.disconnect();
-			return;
-		}
-
-		// calculate the sentiment
-		Sentiment sent = new Sentiment(storageFile);
-		sent.calculate();
-
-		// end of calculation
-		long endTime = System.currentTimeMillis();
-		long duration = endTime - startTime;
-
-		Result result = new Result(searchTerm, startDate, endDate, -1);
-		result.setCalculationTime(duration);
-		result.setNumTweets(sent.getTweetsProcessed());
-		result.setSentiment(sent.getResult());
-
-		try {
-			database.addResult(result);
-			logger.debug("Added result for term " + searchTerm + " to db");
-		} catch (SQLException e) {
-			logger.error("Cannot write the result into the database", e);
-			response.setStatus(FAIL_STATE);
-			return;
-		} finally {
-			database.disconnect();
-		}
-
-		// TODO notify the gui
-
-		logger.info("Finished processing " + searchTerm);
+		// start and give feedback very fast in order to prevent the keyword to be processed by multiple tiers
+		new Thread(new AsyncSentimentRunnable(searchTerm)).start();
 		response.setStatus(SUCCESS_STATE);
 	}
 
@@ -116,5 +68,74 @@ public class WorkerServlet extends HttpServlet {
 		String searchTerm = reader.readLine();
 		logger.debug("Got search term " + searchTerm);
 		return searchTerm;
+	}
+
+	private class AsyncSentimentRunnable implements Runnable {
+
+		private final String searchTerm;
+
+		public AsyncSentimentRunnable(String searchTerm) {
+			this.searchTerm = searchTerm;
+		}
+
+		@Override
+		public void run() {
+			logger.info("Start processing " + searchTerm);
+
+			long startTime = System.currentTimeMillis();
+
+			// TODO get these values from the message
+			Date startDate = new Date(0); // 1970
+			Date endDate = new Date(); // now
+
+			// temporary file to store the tweets in
+			File storageFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
+
+			DatabaseConnection conn = DatabaseConnection.getDefaultDatabase();
+			ISentimentDatabase database = null;
+
+			try {
+				database = new Database(conn);
+				database.searchToFile(storageFile, searchTerm, startDate, endDate);
+			} catch (SQLException e) {
+				logger.error("Cannot search db for term " + searchTerm, e);
+				if (database != null)
+					database.disconnect();
+				return;
+			}
+
+			// calculate the sentiment
+			Sentiment sent = new Sentiment(storageFile);
+			try {
+				sent.calculate();
+			} catch (FileNotFoundException e) {
+				logger.error("File for search term " + searchTerm + " could not be found.", e);
+				if (database != null)
+					database.disconnect();
+				return;
+			}
+
+			// end of calculation
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
+
+			Result result = new Result(searchTerm, startDate, endDate, -1);
+			result.setCalculationTime(duration);
+			result.setNumTweets(sent.getTweetsProcessed());
+			result.setSentiment(sent.getResult());
+
+			try {
+				database.addResult(result);
+				logger.debug("Added result for term " + searchTerm + " to db");
+			} catch (SQLException e) {
+				logger.error("Cannot write the result into the database", e);
+				return;
+			} finally {
+				database.disconnect();
+			}
+
+			// TODO notify the GUI
+			logger.info("Finished processing " + searchTerm);
+		}
 	}
 }
