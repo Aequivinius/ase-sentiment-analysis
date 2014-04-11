@@ -59,6 +59,12 @@ public class DatabaseConnection {
 	}
 
 	public static DatabaseConnection getDefaultDatabase() {
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Cannot find postgres driver");
+		}
+
 		return new DatabaseConnection("team3-database.cwpnxzscxztu.eu-west-1.rds.amazonaws.com", 5432,
 				"team3_db", "ase_team3", "WwDXPTHaaCmk8tauN8XBMctLAKXFcq", false);
 	}

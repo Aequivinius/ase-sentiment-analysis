@@ -1,8 +1,10 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -10,15 +12,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import ch.uzh.ifi.seal.ase.group3.db.Database;
 import ch.uzh.ifi.seal.ase.group3.db.DatabaseConnection;
 import ch.uzh.ifi.seal.ase.group3.db.interfaces.ISentimentDatabase;
 import ch.uzh.ifi.seal.ase.group3.db.model.Result;
-import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.SQSMessageUtil;
+import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.SQSMessageReplyUtil;
 import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.Sentiment;
 import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.ServletFileUtil;
-
-import com.amazonaws.services.sqs.model.Message;
 
 /**
  * An example Amazon Elastic Beanstalk Worker Tier application. This example
@@ -26,25 +28,18 @@ import com.amazonaws.services.sqs.model.Message;
  */
 public class WorkerServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+	private static final Charset UTF_8 = Charset.forName("UTF-8");
+	private static final int SUCCESS_STATE = 200;
+	private static final int FAIL_STATE = 500;
 
-	private final SQSMessageUtil sqsMessageUtil;
+	private static final long serialVersionUID = 5328746493311159850L;
+	private static final Logger logger = Logger.getLogger(WorkerServlet.class);
 
-	/**
-	 * A client to use to access Amazon S3. Pulls credentials from the {@code AwsCredentials.properties} file
-	 * if found on the classpath,
-	 * otherwise will attempt to obtain credentials based on the IAM
-	 * Instance Profile associated with the EC2 instance on which it is
-	 * run.
-	 */
-	/*
-	 * private final AmazonS3Client s3 = new AmazonS3Client(new AWSCredentialsProviderChain(
-	 * new InstanceProfileCredentialsProvider(), new ClasspathPropertiesFileCredentialsProvider()));
-	 */
+	private final SQSMessageReplyUtil sqsMessageUtil;
 
 	public WorkerServlet() {
-		sqsMessageUtil = new SQSMessageUtil();
-
+		sqsMessageUtil = new SQSMessageReplyUtil();
+		// BasicConfigurator.configure();
 	}
 
 	/**
@@ -55,84 +50,71 @@ public class WorkerServlet extends HttpServlet {
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
 			throws ServletException, IOException {
-		// configure the servlet
+		// configure the servlet paths
 		if (!ServletFileUtil.getInstance().isConfigured()) {
 			ServletFileUtil.getInstance().configure(getServletContext());
 		}
 
-		// poll for messages
-		System.out.println("Start polling for new messages");
-		List<Message> messages = sqsMessageUtil.getMessagesBlocking();
-		System.out.println("Polling messages ends now.");
+		String searchTerm = getTerm(request);
+		logger.info("Start processing " + searchTerm);
 
-		// connect to DB
-		ISentimentDatabase database;
+		long startTime = System.currentTimeMillis();
+
+		// TODO get these values from the message
+		Date startDate = new Date(0); // 1970
+		Date endDate = new Date(); // now
+
+		// temporary file to store the tweets in
+		File storageFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
+
+		DatabaseConnection conn = DatabaseConnection.getDefaultDatabase();
+		ISentimentDatabase database = null;
+
 		try {
-			database = getDatabase();
+			database = new Database(conn);
+			database.searchToFile(storageFile, searchTerm, startDate, endDate);
 		} catch (SQLException e) {
-			System.out.println("Cannot connect to database");
-			e.printStackTrace();
+			logger.error("Cannot search db for term " + searchTerm, e);
+			response.setStatus(FAIL_STATE);
+			if (database != null)
+				database.disconnect();
 			return;
 		}
 
-		// iterate through them and process them one by one
-		for (Message message : messages) {
-			long startTime = System.currentTimeMillis();
-			String searchTerm = message.getBody();
+		// calculate the sentiment
+		Sentiment sent = new Sentiment(storageFile);
+		sent.calculate();
 
-			// TODO get these values from the message
-			Date startDate = new Date(0); // 1970
-			Date endDate = new Date(); // now
+		// end of calculation
+		long endTime = System.currentTimeMillis();
+		long duration = endTime - startTime;
 
-			// temporary file to store the tweets in
-			File storageFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
-			try {
-				database.searchToFile(storageFile, searchTerm, startDate, endDate);
-			} catch (SQLException e) {
-				System.out.println("Cannot search db for term " + searchTerm + ".");
-				e.printStackTrace();
-				continue;
-			}
+		Result result = new Result(searchTerm, startDate, endDate, -1);
+		result.setCalculationTime(duration);
+		result.setNumTweets(sent.getTweetsProcessed());
+		result.setSentiment(sent.getResult());
 
-			// calculate the sentiment
-			Sentiment sent = new Sentiment(storageFile);
-			sent.calculate();
-
-			// end of calculation
-			long endTime = System.currentTimeMillis();
-			long duration = endTime - startTime;
-
-			Result result = new Result(searchTerm, startDate, endDate, -1);
-			result.setCalculationTime(duration);
-			result.setNumTweets(sent.getTweetsProcessed());
-			result.setSentiment(sent.getResult());
-
-			try {
-				database.addResult(result);
-			} catch (SQLException e) {
-				System.out.println("Cannot write the result into the database");
-				e.printStackTrace();
-				continue;
-			}
-
-			// delete the message from the queue
-			sqsMessageUtil.deleteMsg(message);
-
-			// TODO notify the gui
-
-			System.out.println("Processed sentiment for " + searchTerm);
+		try {
+			database.addResult(result);
+			logger.debug("Added result for term " + searchTerm + " to db");
+		} catch (SQLException e) {
+			logger.error("Cannot write the result into the database", e);
+			response.setStatus(FAIL_STATE);
+			return;
+		} finally {
+			database.disconnect();
 		}
+
+		// TODO notify the gui
+
+		logger.info("Finished processing " + searchTerm);
+		response.setStatus(SUCCESS_STATE);
 	}
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-			IOException {
-		// TODO just for testing
-		doPost(req, resp);
-	}
-
-	private ISentimentDatabase getDatabase() throws SQLException {
-		DatabaseConnection conn = DatabaseConnection.getDefaultDatabase();
-		return new Database(conn);
+	private String getTerm(HttpServletRequest request) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+		String searchTerm = reader.readLine();
+		logger.debug("Got search term " + searchTerm);
+		return searchTerm;
 	}
 }
