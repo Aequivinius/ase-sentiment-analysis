@@ -122,7 +122,9 @@ public class Charts {
 			public void onSelect(SelectEvent event) {
 
 				// clear List containing previous selection
-				termListSelected.clear();
+				if (!termListSelected.isEmpty()) {
+					termListSelected.clear();
+				}
 
 				// May be multiple selections.
 				JsArray<Selection> selections = chart.getSelections();
