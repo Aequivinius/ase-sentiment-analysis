@@ -75,6 +75,7 @@ public class WorkerServlet extends HttpServlet {
 		sqsLocker.releaseLock(searchTerm);
 
 		// TODO notify the GUI
+		sqsMessageUtil.sendMsgToGUI("GUI: Aktualisieren!");
 	}
 
 	private String getTerm(HttpServletRequest request) throws IOException {

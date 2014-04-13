@@ -24,6 +24,16 @@
 		<servlet-name>queueManagerServiceImpl</servlet-name>
 		<url-pattern>/GWTMain/queuemanager</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>pollingDBServiceImpl</servlet-name>
+		<servlet-class>ch.uzh.ifi.seal.ase.group3.server.PollingDBServiceImpl
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>pollingDBServiceImpl</servlet-name>
+		<url-pattern>/GWTMain/pollservice</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>jUnitHostImpl</servlet-name>

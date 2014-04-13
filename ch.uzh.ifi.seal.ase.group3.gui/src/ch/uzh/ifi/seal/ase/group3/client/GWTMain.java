@@ -47,6 +47,7 @@ public class GWTMain implements EntryPoint {
 	/* ASync Services */
 	private StoredTermServiceAsync storedTermSvc = GWT.create(StoredTermService.class);
 	private QueueManagerServiceAsync queueMgrSvc = GWT.create(QueueManagerService.class);
+	private PollingDBServiceAsync pollingSvc = GWT.create(PollingDBService.class);
 
 	/** This is the entry point method. */
 	public void onModuleLoad() {
@@ -154,6 +155,13 @@ public class GWTMain implements EntryPoint {
 	 */
 	public QueueManagerServiceAsync getQueueManager() {
 		return queueMgrSvc;
+	}
+	
+	/**
+	 * @return Polling Service instance
+	 */
+	public PollingDBServiceAsync getPollingService() {
+		return pollingSvc;
 	}
 
 	/**

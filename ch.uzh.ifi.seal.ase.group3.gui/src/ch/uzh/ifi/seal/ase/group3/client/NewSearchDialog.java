@@ -1,10 +1,14 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
+import java.util.List;
+
+import ch.uzh.ifi.seal.ase.group3.db.model.Result;
 import ch.uzh.ifi.seal.ase.group3.shared.Constants;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -88,6 +92,43 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 						Window.alert (Constants.ADD_NEW_TERM_FAILED);
 					}
 					public void onSuccess(Void result){
+						
+						// start polling service: notifies GUI when new data can be displayed.
+						AsyncCallback<List<String>> callbackRefresh = new AsyncCallback<List<String>>(){
+
+							@Override
+							public void onFailure(Throwable caught) {
+
+								Window.alert ("Polling Service failed");
+							}
+
+							@Override
+							public void onSuccess(List<String> result) {
+								if (result.isEmpty()){
+									Window.alert("polling onSuccess returned zero-sized Array!");
+								}
+								else{
+									
+									Timer t = new Timer() {
+									      @Override
+									      public void run() {
+									    	 env.refreshDisplay();
+									      }
+									    };
+
+									    // Schedule the timer to run once in 5 seconds.
+									    t.schedule(5000);
+									 									
+								}
+								
+								
+							}
+							
+						};
+						env.getPollingService().startPoll(callbackRefresh);
+						
+						
+						
 						// show Alert that term was saved
 						Window.alert(Constants.ADD_NEW_TERM_SUCCESS);						
 					}
