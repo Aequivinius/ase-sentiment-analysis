@@ -43,6 +43,7 @@ public class GWTMain implements EntryPoint {
 
 	/* Charts instance */
 	private Charts charts = new Charts();
+	
 
 	/* ASync Services */
 	private StoredTermServiceAsync storedTermSvc = GWT.create(StoredTermService.class);
@@ -57,6 +58,9 @@ public class GWTMain implements EntryPoint {
 
 		/* build list of already present search terms */
 		buildDataSet();
+		
+		/* Polling DB for changes */
+		new OnDBChange(this).waitForDB();
 
 		// Focus the cursor on the add new search term field when the app loads
 		// searchTermField.setFocus(true);

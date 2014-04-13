@@ -14,4 +14,8 @@ public interface StoredTermServiceAsync {
 	void getStoredTerms(AsyncCallback<List<Result>> callback);
 
 	void clearAllStoredTerms(AsyncCallback<Void> callback);
+
+	void waitForDBChange(AsyncCallback<Void> callback);
+
+
 }

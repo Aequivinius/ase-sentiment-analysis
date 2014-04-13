@@ -16,4 +16,6 @@ public interface StoredTermService extends RemoteService {
 	void clearAllStoredTerms();
 
 	List<Result> getStoredTerms();
+	
+	void waitForDBChange();
 }

@@ -1,9 +1,7 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
-import ch.uzh.ifi.seal.ase.group3.db.model.Result;
 import ch.uzh.ifi.seal.ase.group3.shared.Constants;
 
 import com.google.gwt.core.client.Scheduler;
@@ -11,7 +9,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -114,36 +111,12 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 					}
 					public void onSuccess(Void result){
 						
-						// start polling service: notifies GUI when new data can be displayed.
-						AsyncCallback<List<String>> callbackRefresh = new AsyncCallback<List<String>>(){
-
-							@Override
-							public void onFailure(Throwable caught) {
-
-								Window.alert ("Polling Service failed");
-							}
-
-							@Override
-							public void onSuccess(List<String> result) {
-								if (result.isEmpty()){
-									Window.alert("polling onSuccess returned zero-sized Array!");
-								}
-								else{
-									
-									env.refreshDisplay();			
-								}
-								
-								
-							}
-							
-						};
-						env.getPollingService().startPoll(callbackRefresh);
-						
 						
 						
 						// show Alert that term was saved
 						Window.alert(Constants.ADD_NEW_TERM_SUCCESS);						
 					}
+					
 				};
 
 				// add search term to message queue system
@@ -156,6 +129,7 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 		}
 
 	}
+	
 }
 
 
