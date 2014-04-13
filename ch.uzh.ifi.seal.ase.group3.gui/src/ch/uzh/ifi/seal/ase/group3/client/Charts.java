@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.uzh.ifi.seal.ase.group3.db.model.Result;
@@ -25,7 +26,7 @@ public class Charts {
 	private AbstractDataTable dataTableVis;
 	private Table chartTableVis;
 	private List<Result> termList;
-	private List<String> termListSelected;
+	private List<String> termListSelected = new ArrayList<String>();
 
 	/**
 	 * Displays a Google Charts Visualization of stored search terms

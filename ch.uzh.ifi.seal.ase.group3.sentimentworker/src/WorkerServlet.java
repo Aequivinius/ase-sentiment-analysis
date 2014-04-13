@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -23,6 +25,7 @@ import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.SQSLocker;
 import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.SQSMessageReplyUtil;
 import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.Sentiment;
 import ch.uzh.ifi.seal.ase.group3.worker.sentimentworker.ServletFileUtil;
+// import ch.uzh.ifi.seal.ase.group3.gui.Constants;
 
 /**
  * An example Amazon Elastic Beanstalk Worker Tier application. This example
@@ -41,6 +44,10 @@ public class WorkerServlet extends HttpServlet {
 
 	private final SQSLocker sqsLocker;
 	private final SQSMessageReplyUtil sqsMessageUtil;
+	
+	// TODO Use Constants.DATE_FORMAT
+	// private SimpleDateFormat dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT);
+	private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy MMM dd");
 
 	public WorkerServlet() {
 		sqsMessageUtil = new SQSMessageReplyUtil();
@@ -107,10 +114,25 @@ public class WorkerServlet extends HttpServlet {
 		logger.info("Start processing " + searchTerm);
 
 		long startTime = System.currentTimeMillis();
-
-		// TODO get these values from the message
+		
+		// parse incoming message string (separate search term, start date and end date)
+		String[] split = searchTerm.split(";");
+		String term = split[0];
+		String start = split[1];
+		String end = split[2];
+		
+		
 		Date startDate = new Date(0); // 1970
 		Date endDate = new Date(); // now
+		try {
+			startDate = dateFormatter.parse(start); 
+			endDate = dateFormatter.parse(end);
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
 
 		// temporary file to store the tweets in
 		File storageFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
@@ -120,7 +142,7 @@ public class WorkerServlet extends HttpServlet {
 
 		try {
 			database = new Database(conn);
-			database.searchToFile(storageFile, searchTerm, startDate, endDate);
+			database.searchToFile(storageFile, term, startDate, endDate);
 		} catch (SQLException e) {
 			logger.error("Cannot search db for term " + searchTerm, e);
 			if (database != null)
@@ -143,7 +165,7 @@ public class WorkerServlet extends HttpServlet {
 		long endTime = System.currentTimeMillis();
 		long duration = endTime - startTime;
 
-		Result result = new Result(searchTerm, startDate, endDate, -1);
+		Result result = new Result(term, startDate, endDate, -1);
 		result.setCalculationTime(duration);
 		result.setNumTweets(sent.getTweetsProcessed());
 		result.setSentiment(sent.getResult());
