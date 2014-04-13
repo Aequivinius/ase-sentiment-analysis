@@ -63,10 +63,15 @@ public final class Constants {
 	/**
 	 * The message displayed to the user when an empty string is submitted for addition
 	 */
-	public static final String EMPTY_NEW_STRING = "The search term cannot be empty. Please try again.";
+	public static final String EMPTY_NEW_STRING = "The search term and/or date(s) cannot be empty. Please try again.";
 	
 	/**
 	 * The message displayed to the user when results are refreshed.
 	 */
 	public static final String RESULTS_REFRESHED = "Results were refreshed.";
+	
+	/**
+	 * The date format used for DateBox and string-to-date parsing
+	 */
+	public static final String DATE_FORMAT = "yyyy MMM dd";
 }
