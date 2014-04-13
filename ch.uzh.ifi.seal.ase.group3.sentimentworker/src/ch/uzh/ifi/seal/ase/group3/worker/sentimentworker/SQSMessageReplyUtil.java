@@ -2,8 +2,6 @@ package ch.uzh.ifi.seal.ase.group3.worker.sentimentworker;
 
 import org.apache.log4j.Logger;
 
-import com.amazonaws.services.sqs.model.SendMessageRequest;
-
 /**
  * Handles messaging from the worker to the GUI
  * 
@@ -27,7 +25,7 @@ public class SQSMessageReplyUtil extends BaseSQSHandler {
 	 */
 	public void sendMsgToGUI(String content) {
 		logger.debug("Sending a message to " + QUEUE_NAME);
-		sqs.sendMessage(new SendMessageRequest(queueURL, content));
+		SQSUtil.sendMsg(content, sqs, queueURL);
 	}
 
 }
