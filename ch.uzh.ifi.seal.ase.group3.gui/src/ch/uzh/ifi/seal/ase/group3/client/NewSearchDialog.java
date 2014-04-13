@@ -109,16 +109,7 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 								}
 								else{
 									
-									Timer t = new Timer() {
-									      @Override
-									      public void run() {
-									    	 env.refreshDisplay();
-									      }
-									    };
-
-									    // Schedule the timer to run once in 5 seconds.
-									    t.schedule(5000);
-									 									
+									env.refreshDisplay();			
 								}
 								
 								

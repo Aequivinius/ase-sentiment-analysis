@@ -29,6 +29,9 @@ public class PollingDBServiceImpl extends RemoteServiceServlet implements
 	private static final String QUEUE_NAME_WORKER2GUI = "Group3-Worker2GUI";
 
 	@Override
+	/**
+	 * Returns the string: "GUI: Aktualisieren!" from the worker.
+	 */
 	public List<String> startPoll() {
 	
 		AmazonSQS sqs = getSQS();
@@ -38,25 +41,19 @@ public class PollingDBServiceImpl extends RemoteServiceServlet implements
 	
 		List<Message> msgs = receiveMsgs(sqs, myQueueUrl);
 		
-		// try it again for a maximum of 10 seconds
-		if (msgs.isEmpty()){
+		// Waits until a message from worker arrived
+		while (msgs.isEmpty()) {
 			
-			for (int i = 0; i < 10; ++i) {
-
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 				msgs = receiveMsgs(sqs, myQueueUrl);
 
-				if (!msgs.isEmpty()) {
-					break;
-				}
 			}
-		}
 
 		List<String> stringMsg = new ArrayList<String>();
 		for (Message m : msgs){
