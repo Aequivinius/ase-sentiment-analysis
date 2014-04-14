@@ -1,9 +1,12 @@
 package ch.uzh.ifi.seal.ase.group3.server;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
 import ch.uzh.ifi.seal.ase.group3.client.QueueManagerService;
+import ch.uzh.ifi.seal.ase.group3.shared.Constants;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -26,20 +29,24 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class QueueManagerServiceImpl extends RemoteServiceServlet implements QueueManagerService {
 
+	private static final SimpleDateFormat dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT);
 	private static final String QUEUE_NAME_GUI2WORKER = "Group3-GUI2Worker";
 
 	@Override
-	public void addNewSearchTerm(String term) throws IllegalArgumentException {
+	public void addNewSearchTerm(String term, Date startDate, Date endDate) throws IllegalArgumentException {
 		// Adds the term to our processing queue
 		AmazonSQS sqs = getSQS();
+
+		final String newTerm = term + ";" + dateFormatter.format(startDate) + ";"
+				+ dateFormatter.format(endDate);
 
 		try {
 			// Get our queue
 			String myQueueUrl = getQueue(sqs, QUEUE_NAME_GUI2WORKER);
 
 			// Send a message
-			sendMsg(term, sqs, myQueueUrl);
-
+			System.out.println("Submitting new search query: " + newTerm);
+			sendMsg(newTerm, sqs, myQueueUrl);
 		} catch (AmazonServiceException ase) {
 			System.out.println("Caught an AmazonServiceException, which means your request made it "
 					+ "to Amazon SQS, but was rejected with an error response for some reason.");

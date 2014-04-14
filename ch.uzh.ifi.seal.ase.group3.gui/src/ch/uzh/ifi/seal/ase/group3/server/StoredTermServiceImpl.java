@@ -16,8 +16,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * The server side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
-public class StoredTermServiceImpl extends RemoteServiceServlet implements
-		StoredTermService, Runnable {
+public class StoredTermServiceImpl extends RemoteServiceServlet implements StoredTermService, Runnable {
 
 	private IResultDatabase db;
 
@@ -67,36 +66,32 @@ public class StoredTermServiceImpl extends RemoteServiceServlet implements
 	public void waitForDBChange() {
 		Thread thread = new Thread(new StoredTermServiceImpl());
 		thread.start();
-		
+
 		try {
-			
+
 			// as soon as this method returns, the GUI refreshes the table.
 			thread.join();
-			
+
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		
 	}
 
 	@Override
 	public void run() {
-
-
 		if (oldResults == null) {
 			oldResults = getStoredTerms();
 
 		}
-		
+
 		// DB changed, return!
 		else if (oldResults.size() != getStoredTerms().size()) {
 			oldResults = getStoredTerms();
 			return;
 
 		}
-		
 
 		try {
 			Thread.sleep(5000);
@@ -104,9 +99,9 @@ public class StoredTermServiceImpl extends RemoteServiceServlet implements
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		// repeat until DB changed
 		run();
-		
+
 	}
 }

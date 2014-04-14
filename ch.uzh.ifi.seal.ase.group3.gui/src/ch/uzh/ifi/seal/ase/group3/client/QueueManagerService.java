@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
+import java.util.Date;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -8,6 +10,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("queuemanager")
 public interface QueueManagerService extends RemoteService {
-	void addNewSearchTerm(String term) throws IllegalArgumentException;
+	void addNewSearchTerm(String term, Date startDate, Date endDate);
+
 	void removeSearchTerms();
 }

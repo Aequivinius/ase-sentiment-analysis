@@ -1,7 +1,5 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
-import java.text.SimpleDateFormat;
-
 import ch.uzh.ifi.seal.ase.group3.shared.Constants;
 
 import com.google.gwt.core.client.Scheduler;
@@ -20,7 +18,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 
-public class NewSearchDialog extends DialogBox implements ClickHandler{
+public class NewSearchDialog extends DialogBox implements ClickHandler {
+
+	public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
 
 	private GWTMain env;
 	Button addButton = new Button("Add new term");
@@ -31,8 +31,6 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 	Label textLabel = new Label("Search Term:");
 	Label startLabel = new Label("Start Date:");
 	Label endLabel = new Label("End Date:");
-	DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
-	SimpleDateFormat dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT);
 
 	public NewSearchDialog(GWTMain env) {
 
@@ -49,11 +47,11 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 		VerticalPanel mainDialogPanel = new VerticalPanel();
 		setWidget(mainDialogPanel);
 
-		// Search term details		
+		// Search term details
 		searchTermTextBox.setWidth("150px");
 		mainDialogPanel.add(textLabel);
 		mainDialogPanel.add(searchTermTextBox);
-		
+
 		// Start and End date
 		startDateBox.setWidth("150px");
 		startDateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
@@ -63,8 +61,6 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 		mainDialogPanel.add(startDateBox);
 		mainDialogPanel.add(endLabel);
 		mainDialogPanel.add(endDateBox);
-		
-
 
 		// is required to setFocus to textbox successfully. Reason: Widget takes
 		// a certain time to load.
@@ -92,35 +88,34 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 		if (sender == cancelButton) {
 			searchTermTextBox.setText("");
 			NewSearchDialog.this.hide();
-		} 
-		else if (sender == addButton) {
+		} else if (sender == addButton) {
 
 			// check for empty search term or dates
-			if(searchTermTextBox.getValue().isEmpty() || startDateBox.getValue().toString().isEmpty() || endDateBox.getValue().toString().isEmpty()) {
+			if (searchTermTextBox.getValue().isEmpty() || startDateBox.getValue().toString().isEmpty()
+					|| endDateBox.getValue().toString().isEmpty()) {
 				Window.alert(Constants.EMPTY_NEW_STRING);
-			}			
-			else {	
-				
-				final String newTerm = searchTermTextBox.getValue() + ";" + dateFormatter.format(startDateBox.getValue()) + ";" + dateFormatter.format(endDateBox.getValue());
+			} else {
 
-				// do asynchronous saving 
-				AsyncCallback<Void> callback = new AsyncCallback<Void>(){
+				final String newTerm = searchTermTextBox.getValue();
+
+				// do asynchronous saving
+				AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 					public void onFailure(Throwable caught) {
 						// Do something with errors.
-						Window.alert (Constants.ADD_NEW_TERM_FAILED);
+						Window.alert(Constants.ADD_NEW_TERM_FAILED);
 					}
-					public void onSuccess(Void result){
-						
-						
-						
+
+					public void onSuccess(Void result) {
+
 						// show Alert that term was saved
-						Window.alert(Constants.ADD_NEW_TERM_SUCCESS);						
+						Window.alert(Constants.ADD_NEW_TERM_SUCCESS);
 					}
-					
+
 				};
 
 				// add search term to message queue system
-				env.getQueueManager().addNewSearchTerm(newTerm, callback);
+				env.getQueueManager().addNewSearchTerm(newTerm, startDateBox.getValue(),
+						endDateBox.getValue(), callback);
 
 			}
 			// hide dialog
@@ -129,7 +124,5 @@ public class NewSearchDialog extends DialogBox implements ClickHandler{
 		}
 
 	}
-	
+
 }
-
-
