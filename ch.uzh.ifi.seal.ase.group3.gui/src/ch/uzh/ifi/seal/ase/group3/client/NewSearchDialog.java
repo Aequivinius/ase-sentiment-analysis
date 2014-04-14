@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.ase.group3.client;
 
+import java.util.Date;
+
 import ch.uzh.ifi.seal.ase.group3.shared.Constants;
 
 import com.google.gwt.core.client.Scheduler;
@@ -33,7 +35,6 @@ public class NewSearchDialog extends DialogBox implements ClickHandler {
 	Label endLabel = new Label("End Date:");
 
 	public NewSearchDialog(GWTMain env) {
-
 		this.env = env;
 
 		// Set the dialog box's caption.
@@ -55,8 +56,12 @@ public class NewSearchDialog extends DialogBox implements ClickHandler {
 		// Start and End date
 		startDateBox.setWidth("150px");
 		startDateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
+		startDateBox.setValue(new Date(0));
+
 		endDateBox.setWidth("150px");
 		endDateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
+		endDateBox.setValue(new Date());
+
 		mainDialogPanel.add(startLabel);
 		mainDialogPanel.add(startDateBox);
 		mainDialogPanel.add(endLabel);

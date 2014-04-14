@@ -4,8 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -45,10 +43,6 @@ public class WorkerServlet extends HttpServlet {
 
 	private final SQSLocker sqsLocker;
 	private final SQSMessageReplyUtil sqsMessageUtil;
-
-	// TODO Use Constants.DATE_FORMAT
-	// private SimpleDateFormat dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT);
-	private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy MMM dd");
 
 	public WorkerServlet() {
 		sqsMessageUtil = new SQSMessageReplyUtil();
@@ -125,9 +119,9 @@ public class WorkerServlet extends HttpServlet {
 		Date startDate = new Date(0); // 1970
 		Date endDate = new Date(); // now
 		try {
-			startDate = dateFormatter.parse(start);
-			endDate = dateFormatter.parse(end);
-		} catch (ParseException e1) {
+			startDate = new Date(Long.parseLong(start));
+			endDate = new Date(Long.parseLong(end));
+		} catch (NumberFormatException e1) {
 			logger.error("Cannot parse the date, taking default values");
 		}
 
